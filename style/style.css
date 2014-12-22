@@ -3,54 +3,68 @@
  * Rafi Khan
  * December 22, 2014
  */
-
-* { box-sizing: border-box; }
-body, html {
-  height: 100%; width: 100%;
-  padding: 0; margin: 0;
-  font: 16px/1.3 'helvetica';
-}
-
-.container {
-  padding: 30px;
-}
-
-#map, #map svg {
-  width: 1000px;
-  height: 600px;
-  position: relative;
-}
-
-/* Data container styles */
-#data-container {
-  position: absolute;
-  top: 50px; right: 50px;
-  z-index: 1;
-  background-color: rgba(255,255,255, 0.9);
-  border: 1pt solid white;
-  padding: 10px;
-  display: none;
-}
-#data-container.shown {
-  display: block;
-}
-
-/* Map Styles */
-path {
-  fill: #eee;
-  stroke: #999;
-  stroke-width: 1pt;
-  cursor: pointer;
-  -webkit-transition: fill 0.2s;
-  transition: fill 0.2s;
-}
-path:hover {
-  fill: #fafafa;
-}
-path.selected {
-  fill: #fb716e;
-}
-path.disabled {
-  cursor: default;
-  fill: #999;
-}
+/* Variables */
+/* Everything scoped inside the smoke-map div */
+.smoke-map {
+  /* Data container styles */
+  /* Legend container styles */
+  /* State layer styles */
+  /* County Styles */ }
+  .smoke-map * {
+    box-sizing: border-box; }
+  .smoke-map #smoke-map-map {
+    width: 1000px;
+    height: 600px;
+    position: relative; }
+  .smoke-map svg {
+    width: 100%;
+    height: 100%;
+    position: relative; }
+  .smoke-map #smoke-map-data-container {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    width: 300px;
+    background-color: #eee;
+    border: 1pt solid #ddd;
+    border-radius: 2px;
+    padding: 10px;
+    display: none;
+    z-index: 1; }
+    .smoke-map #smoke-map-data-container.shown {
+      display: block; }
+  .smoke-map #smoke-map-legend-container {
+    z-index: 2;
+    position: absolute;
+    bottom: 10px;
+    left: 20px; }
+  .smoke-map #states path {
+    stroke: #777;
+    stroke-width: 1pt;
+    fill: #ddd; }
+  .smoke-map #counties path {
+    opacity: 0.7;
+    fill: #fafafa;
+    stroke: #dddddd;
+    stroke-width: 1px;
+    cursor: pointer;
+    -webkit-transition: fill 0.2s;
+    transition: fill 0.2s; }
+    .smoke-map #counties path:hover {
+      opacity: 0.9; }
+    .smoke-map #counties path.index-1 {
+      fill: #70fb5e; }
+    .smoke-map #counties path.index-2 {
+      fill: #c3fb68; }
+    .smoke-map #counties path.index-3 {
+      fill: #fbf45d; }
+    .smoke-map #counties path.index-4 {
+      fill: #fbbb4b; }
+    .smoke-map #counties path.index-5 {
+      fill: #fb6b41; }
+    .smoke-map #counties path.selected {
+      opacity: 1;
+      stroke: #444; }
+    .smoke-map #counties path.disabled {
+      cursor: default;
+      fill: #dddddd; }
