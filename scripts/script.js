@@ -93,14 +93,16 @@ $(document).ready(function() {
 
   function roundValues(fips) {
     var p = PRESENT_SW[fips];
+    $.each(p, function(key, value) {
+      if (!isNaN(parseInt(value))) {
+        p[key] = Math.round(p[key] * 100) / 100;
+      }
+    });
     var f = FUTURE_SW[fips];
-    p["SWnum1y"] = Math.round(p["SWnum1y"] * 100) / 100;
-    p["SWnum6y"] = Math.round(p["SWnum6y"] * 100) / 100;
-    p["intensity"] = Math.round(p["intensity"] * 100) / 100;
-    p["length"] = Math.round(p["length"] * 100) / 100;
-    f["SWnum1y"] = Math.round(f["SWnum1y"] * 100) / 100;
-    f["SWnum6y"] = Math.round(f["SWnum6y"] * 100) / 100;
-    f["intensity"] = Math.round(f["intensity"] * 100) / 100;
-    f["length"] = Math.round(f["length"] * 100) / 100;
+    $.each(f, function(key, value) {
+      if (!isNaN(parseInt(value))) {
+        f[key] = Math.round(f[key] * 100) / 100;
+      }
+    });
   }
 });
