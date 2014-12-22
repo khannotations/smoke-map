@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Map</title>
+  <link rel="stylesheet" href="./style/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Interactive map</h1>
+    <div id="map">
+      <div id="data-container">Shown</div>
+    </div>
+  </div>
+  <script src="./scripts/jquery-2.1.3.min.js"></script>
+  <script src="./scripts/jsrender.min.js"></script>
+  <script src="./scripts/polymaps.min.js"></script>
+  <script src="./scripts/script.js"></script>
+  <script id="dataContainerTmpl" type="text/x-jsrender">
+  <h2>Data for {{:name}} ({{:present.state}})</h2>
+  <table style="float: left">
+    <thead>
+      <th>Present values</th><th></th>
+    </thead>
+    <tbody>
+      <tr>
+        <td>SW Day Num</td><td>{{:present.SWdaynum}}</td>
+      </tr>
+      <tr>
+        <td>SW 1 year</td><td>{{:present.SWnum1y}}</td>
+      </tr>
+      <tr>
+        <td>SW 6 year</td><td>{{:present.SWnum6y}}</td>
+      </tr>
+      <tr>
+        <td>Intensity</td><td>{{:present.intensity}}</td>
+      </tr>
+      <tr>
+        <td>Length</td><td>{{:present.length}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table style="float: left">
+    <thead>
+      <th>Future values</th><th></th>
+    </thead>
+    <tbody>
+      <tr>
+        <td>SW Day Num</td><td>{{:future.SWdaynum}}</td>
+      </tr>
+      <tr>
+        <td>SW 1 year</td><td>{{:future.SWnum1y}}</td>
+      </tr>
+      <tr>
+        <td>SW 6 year</td><td>{{:future.SWnum6y}}</td>
+      </tr>
+      <tr>
+        <td>Intensity</td><td>{{:future.intensity}}</td>
+      </tr>
+      <tr>
+        <td>Length</td><td>{{:future.length}}</td>
+      </tr>
+    </tbody>
+  </table>
+  </script>
+</body>
+</html>
