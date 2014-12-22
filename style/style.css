@@ -12,6 +12,8 @@
   /* County Styles */ }
   .smoke-map * {
     box-sizing: border-box; }
+  .smoke-map .pull-left {
+    float: left; }
   .smoke-map #smoke-map-map {
     width: 1000px;
     height: 600px;
@@ -29,15 +31,27 @@
     border: 1pt solid #ddd;
     border-radius: 2px;
     padding: 10px;
-    display: none;
     z-index: 1; }
-    .smoke-map #smoke-map-data-container.shown {
-      display: block; }
   .smoke-map #smoke-map-legend-container {
     z-index: 2;
     position: absolute;
     bottom: 10px;
     left: 20px; }
+    .smoke-map #smoke-map-legend-container .index-block {
+      display: inline-block;
+      padding: 5px 8px; }
+      .smoke-map #smoke-map-legend-container .index-block.index-0 {
+        background-color: #fafafa; }
+      .smoke-map #smoke-map-legend-container .index-block.index-1 {
+        background-color: #70fb5e; }
+      .smoke-map #smoke-map-legend-container .index-block.index-2 {
+        background-color: #c3fb68; }
+      .smoke-map #smoke-map-legend-container .index-block.index-3 {
+        background-color: #fbf45d; }
+      .smoke-map #smoke-map-legend-container .index-block.index-4 {
+        background-color: #fbbb4b; }
+      .smoke-map #smoke-map-legend-container .index-block.index-5 {
+        background-color: #fb6b41; }
   .smoke-map #states path {
     stroke: #777;
     stroke-width: 1pt;

@@ -17,6 +17,7 @@ $index-5: #fb6b41; // red
 .smoke-map {
 
   * { box-sizing: border-box; }
+  .pull-left { float: left; }
 
   #smoke-map-map {
     width: 1000px;
@@ -38,11 +39,7 @@ $index-5: #fb6b41; // red
     border: 1pt solid #ddd;
     border-radius: 2px;
     padding: 10px;
-    display: none;
     z-index: 1;
-    &.shown {
-      display: block;
-    }
   }
 
   /* Legend container styles */
@@ -50,6 +47,16 @@ $index-5: #fb6b41; // red
     z-index: 2;
     position: absolute;
     bottom: 10px; left: 20px;
+    .index-block {
+      display: inline-block;
+      padding: 5px 8px;
+      &.index-0 { background-color: $index-0; }
+      &.index-1 { background-color: $index-1; }
+      &.index-2 { background-color: $index-2; }
+      &.index-3 { background-color: $index-3; }
+      &.index-4 { background-color: $index-4; }
+      &.index-5 { background-color: $index-5; }
+    }
   }
 
   /* State layer styles */
