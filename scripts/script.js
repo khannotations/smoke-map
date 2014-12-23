@@ -6,7 +6,7 @@ $(document).ready(function() {
     future: {
       length: "Future_length",
       intensity: "Future_intensity",
-      seasonLenght: "Future_seasonlength",
+      seasonLength: "Future_seasonlength",
       sw6: "Future_SWnum6y",
       sw1: "Future_SWnum1y",
       swDay: "Future_SWdaynum",
@@ -15,7 +15,7 @@ $(document).ready(function() {
     present: {
       length: "PD_length",
       intensity: "PD_intensity",
-      seasonLenght: "PD_seasonlength",
+      seasonLength: "PD_seasonlength",
       sw6: "PD_SWnum6y",
       sw1: "PD_SWnum1y",
       swDay: "PD_SWdaynum",
@@ -132,8 +132,49 @@ $(document).ready(function() {
     if (!data) {
       return;
     }
-    var html = $.templates("#dataContainerTmpl").render(data);
-    $(DATA_CONTAINER_ID).html(html).addClass("shown");
+    console.log(data);
+    var presentData = [
+      parseFloat(data[KEYS.present.seasonLength]),
+      parseFloat(data[KEYS.present.intensity]),
+      parseFloat(data[KEYS.present.length]),
+      parseFloat(data[KEYS.present.sw1]),
+      parseFloat(data[KEYS.present.sw6]),
+      parseFloat(data[KEYS.present.swDay]),
+    ];
+    var futureData = [
+      parseFloat(data[KEYS.future.seasonLength]),
+      parseFloat(data[KEYS.future.intensity]),
+      parseFloat(data[KEYS.future.length]),
+      parseFloat(data[KEYS.future.sw1]),
+      parseFloat(data[KEYS.future.sw6]),
+      parseFloat(data[KEYS.future.swDay]),
+    ];
+    console.log(presentData, futureData);
+    $(DATA_CONTAINER_ID).highcharts({
+      chart: {
+        type: 'bar'
+      },
+      title: {
+        align: "left",
+        text: data["COUNTY"] + " (" + data["STATE"] + ")"
+      },
+      xAxis: {
+        categories: ["Season length", "Intensity", "Length", "Smoke Wave (1yr)",
+        "Smoke Wave (6yr)", "Smoke Wave (day #)"]
+      },
+      series: [
+        {
+          name: "Present",
+          data: presentData
+        },
+        {
+          name: "Future",
+          data: futureData
+        }
+      ]
+    });
+    // var html = $.templates("#dataContainerTmpl").render(data);
+    // $(DATA_CONTAINER_ID).html(html).addClass("shown");
   }
 
   /* jQuery add/removeClass doesn't work on SVG, so writing my own... */
