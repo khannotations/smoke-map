@@ -38,14 +38,26 @@ $stroke: #ddd;
   $data-container-width: 320px;
   #smoke-map-data-container {
     position: absolute;
-    top: 0; left: 20px;
+    top: 50px; left: 20px;
     width: 320px;
-    height: 100%;
     background-color: #eee;
     border: 1pt solid #ddd;
     border-radius: 2px;
     padding: 10px;
     z-index: 1;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+    &.active {
+      top: 0;
+      height: 100%;
+    }
+  }
+
+  #smoke-map-data-options {
+    margin-bottom: 10px;
+    &.hidden {
+      display: none;
+    }
   }
 
   /* Legend container styles */

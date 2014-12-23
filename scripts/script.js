@@ -22,9 +22,19 @@ $(document).ready(function() {
       index: "PD_index2"
     }
   },
+  CODE_TO_NAME = {
+    length: "Length",
+    intensity: "Intensity",
+    seasonLength: "Season Length",
+    sw6: "Smoke Wave 6",
+    sw1: "Smoke Wave 1",
+    swDay: "Smoke Wave Num Days",
+    index: "FSRI index"
+  },
   CLASSES = ["index-0", "index-1", "index-2", "index-3", "index-4", "index-5"],
-  MODE = "present", VIEW = "state",
-  DATA_CONTAINER_ID = "#smoke-map-data-container";
+  MODE = "present", VIEW = "state", DATA_TYPE = "length", SORTBY = "diff",
+  CURR_NAME, CURR_FIPS,
+  DATA_CONTAINER_ID = "#smoke-map-data";
   // Load map
   po = org.polymaps;
   map = po.map()
@@ -88,7 +98,6 @@ $(document).ready(function() {
       }
       return;
     }
-    console.log(COUNTY_DATA);
     arePathsPrepared = true;
     // Attach data to each path
     $.each(features, function(i, f) {
@@ -108,7 +117,7 @@ $(document).ready(function() {
     attachPathClickHandler("#counties");
     adjustView();
     // Attach event handlers to checkboxes
-    $("input[name='smoke-map-time']").click(function(e) {
+    $("input[name='smoke-map-time']").change(function(e) {
       MODE = $(e.currentTarget).data("time");
       // Recolor map
       $.each($("#counties path"), function(i, p) {
@@ -116,13 +125,19 @@ $(document).ready(function() {
       });
     });
     // Attach event handlers to checkboxes
-    $("input[name='smoke-map-view']").click(function(e) {
-      var oldView = VIEW;
+    $("input[name='smoke-map-view']").change(function(e) {
       VIEW = $(e.currentTarget).data("view");
-      if (oldView !== VIEW) {
-        map.remove(countyLayer).remove(stateLayer)
-        adjustView();
-      }
+      map.remove(countyLayer).remove(stateLayer)
+      adjustView();
+    });
+    // Attach select event handlers
+    $("select[name='smoke-map-data-type']").change(function(e) {
+      DATA_TYPE = $(this).val();
+      showStateData();
+    });
+    $("select[name='smoke-map-data-sort']").change(function(e) {
+      SORTBY = $(this).val();
+      showStateData();
     });
   }
 
@@ -156,34 +171,51 @@ $(document).ready(function() {
   }
 
   function showStateData(fips, name) {
-    var data = STATE_DATA[fips];
+    CURR_FIPS = fips || CURR_FIPS;
+    CURR_NAME = name || CURR_NAME;
+    var data = STATE_DATA[CURR_FIPS];
     if (!data) {
       return;
     }
     var counties = [], presentData = [], futureData = [], diffData = [];
     var sortedData = _.sortBy(data, function(d) {
-      var pd = parseFloat(d[KEYS.present.intensity]);
-      var ft = parseFloat(d[KEYS.future.intensity]);
-      return ft-pd;
+      var pd = parseFloat(d[KEYS.present[DATA_TYPE]]);
+      var ft = parseFloat(d[KEYS.future[DATA_TYPE]]);
+      var fips = parseInt(d["FIPS"]);
+      var toReturn;
+      switch(SORTBY) {
+        case "present":
+          toReturn = pd;
+          break;
+        case "future":
+          toReturn = ft;
+          break;
+        case "diff":
+          toReturn = ft-pd;
+          break;
+        default:
+          toReturn = fips;
+      }
+      return toReturn;
     });
     $.each(sortedData, function(i, d) {
       counties.push(d["COUNTY"].replace(" County", "") + " (" + d["FIPS"] + ")");
-      var pd = parseFloat(d[KEYS.present.intensity]);
-      var ft = parseFloat(d[KEYS.future.intensity]);
+      var pd = parseFloat(d[KEYS.present[DATA_TYPE]]);
+      var ft = parseFloat(d[KEYS.future[DATA_TYPE]]);
       presentData.push(pd);
       futureData.push(ft);
       diffData.push(ft-pd);
     });
-    console.log(presentData);
+    $("#smoke-map-data-container").addClass("active");
     $(DATA_CONTAINER_ID).highcharts({
       chart: { type: 'bar' },
       title: {
         align: "left",
-        text: name
+        text: CURR_NAME
       },
       subtitle: {
         align: "left",
-        text: "Intensity by county"
+        text: CODE_TO_NAME[DATA_TYPE] + " by county"
       },
       xAxis: {
         categories: counties,
@@ -198,9 +230,15 @@ $(document).ready(function() {
       ]
     });
     var chart = $(DATA_CONTAINER_ID).highcharts();
-    console.log(chart);
-    chart.series[0].hide();
-    chart.series[1].hide();
+    if (SORTBY !== "present") {
+      chart.series[0].hide();
+    }
+    if (SORTBY !== "future") {
+      chart.series[1].hide();
+    }
+    if (SORTBY !== "diff") {
+      chart.series[2].hide();
+    }
   }
   /*
    * Given a fips code, populates the data-container div with the corresponding
@@ -246,14 +284,19 @@ $(document).ready(function() {
 
   function adjustView() {
     removeClass($(".selected"), "selected");
+    $("#smoke-map-data-container").removeClass("active");
     if (VIEW === "county") {
+      $(DATA_CONTAINER_ID).html("<em>Choose a county to view its data</em>");
       map.add(stateLayer).add(countyLayer);
       removeClass($("#states"), "active");
       addClass($("#counties"), "active");
+      $("#smoke-map-data-options").addClass("hidden");
     } else {
+      $(DATA_CONTAINER_ID).html("<em>Choose a state to view its data</em>");
       map.add(countyLayer).add(stateLayer);
       removeClass($("#counties"), "active");
       addClass($("#states"), "active");
+      $("#smoke-map-data-options").removeClass("hidden");
     }
   }
 

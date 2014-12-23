@@ -25,15 +25,23 @@
     position: relative; }
   #smoke-map-container #smoke-map-data-container {
     position: absolute;
-    top: 0;
+    top: 50px;
     left: 20px;
     width: 320px;
-    height: 100%;
     background-color: #eee;
     border: 1pt solid #ddd;
     border-radius: 2px;
     padding: 10px;
-    z-index: 1; }
+    z-index: 1;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s; }
+    #smoke-map-container #smoke-map-data-container.active {
+      top: 0;
+      height: 100%; }
+  #smoke-map-container #smoke-map-data-options {
+    margin-bottom: 10px; }
+    #smoke-map-container #smoke-map-data-options.hidden {
+      display: none; }
   #smoke-map-container #smoke-map-legend-container {
     z-index: 2;
     position: absolute;
