@@ -35,9 +35,6 @@
     z-index: 1;
     -webkit-transition: all 0.2s;
     transition: all 0.2s; }
-    #smoke-map-container #smoke-map-data-container.active {
-      top: 0;
-      height: 100%; }
   #smoke-map-container #smoke-map-data-options {
     margin-bottom: 10px; }
     #smoke-map-container #smoke-map-data-options.hidden {
@@ -46,7 +43,7 @@
     z-index: 2;
     position: absolute;
     bottom: 0;
-    left: 340px; }
+    left: 20px; }
     #smoke-map-container #smoke-map-legend-container .index-block {
       display: inline-block;
       padding: 5px 8px; }
@@ -73,7 +70,7 @@
     #smoke-map-container #states.active path:hover {
       opacity: 0.7; }
     #smoke-map-container #states.active path.selected {
-      opacity: 0.9; }
+      opacity: 0.8; }
   #smoke-map-container #counties.active path {
     opacity: 0.7; }
   #smoke-map-container #counties path {
@@ -101,3 +98,5 @@
     #smoke-map-container #counties path.disabled {
       cursor: default;
       fill: #dddddd; }
+    #smoke-map-container #counties path.accent {
+      fill: black; }

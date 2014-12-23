@@ -182,6 +182,7 @@ $(document).ready(function() {
       var pd = parseFloat(d[KEYS.present[DATA_TYPE]]);
       var ft = parseFloat(d[KEYS.future[DATA_TYPE]]);
       var fips = parseInt(d["FIPS"]);
+      console.log(fips);
       var toReturn;
       switch(SORTBY) {
         case "present":
@@ -202,20 +203,18 @@ $(document).ready(function() {
       counties.push(d["COUNTY"].replace(" County", "") + " (" + d["FIPS"] + ")");
       var pd = parseFloat(d[KEYS.present[DATA_TYPE]]);
       var ft = parseFloat(d[KEYS.future[DATA_TYPE]]);
-      presentData.push(pd);
-      futureData.push(ft);
-      diffData.push(ft-pd);
+      var diff = Math.round((ft-pd)*100) / 100;
+      var fips = parseInt(d["FIPS"]);
+      presentData.push({y: pd, fips: fips});
+      futureData.push({y: ft, fips: fips});
+      diffData.push({y: diff, fips: fips});
     });
     $("#smoke-map-data-container").addClass("active");
     $(DATA_CONTAINER_ID).highcharts({
       chart: { type: 'bar' },
       title: {
         align: "left",
-        text: CURR_NAME
-      },
-      subtitle: {
-        align: "left",
-        text: CODE_TO_NAME[DATA_TYPE] + " by county"
+        text: CURR_NAME + " · " + CODE_TO_NAME[DATA_TYPE]
       },
       xAxis: {
         categories: counties,
@@ -227,10 +226,24 @@ $(document).ready(function() {
         { name: "Present", data: presentData },
         { name: "Future", data: futureData },
         { name: "Difference", data: diffData },
-      ]
+      ],
+      plotOptions: {
+        bar: {
+          point: {
+            events: {
+              mouseOut: function() {
+                removeClass($("path[fips='" + this.fips + "']"), "accent");
+              },
+              mouseOver: function() {
+                addClass($("path[fips='" + this.fips + "']"), "accent");
+              }
+            }
+          }
+        }
+      }
     });
     var chart = $(DATA_CONTAINER_ID).highcharts();
-    if (SORTBY !== "present") {
+    if (SORTBY !== "present" && SORTBY !== "fips") {
       chart.series[0].hide();
     }
     if (SORTBY !== "future") {
@@ -272,8 +285,10 @@ $(document).ready(function() {
         text: data["COUNTY"] + " (" + data["STATE"] + ")"
       },
       xAxis: {
-        categories: ["Season length", "Intensity", "Length", "Smoke Wave (1yr)",
-        "Smoke Wave (6yr)", "Smoke Wave (day #)"]
+        categories: _.map(_.keys(KEYS.future), function(code) {
+          console.log(code);
+          return CODE_TO_NAME[code];
+        })
       },
       series: [
         { name: "Present", data: presentData },

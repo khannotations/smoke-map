@@ -47,10 +47,6 @@ $stroke: #ddd;
     z-index: 1;
     -webkit-transition: all 0.2s;
     transition: all 0.2s;
-    &.active {
-      top: 0;
-      height: 100%;
-    }
   }
 
   #smoke-map-data-options {
@@ -64,7 +60,7 @@ $stroke: #ddd;
   #smoke-map-legend-container {
     z-index: 2;
     position: absolute;
-    bottom: 0; left: $data-container-width + 20px;
+    bottom: 0; left: 20px;
     .index-block {
       display: inline-block;
       padding: 5px 8px;
@@ -91,7 +87,7 @@ $stroke: #ddd;
           opacity: 0.7;
         }
         &.selected {
-          opacity: 0.9;
+          opacity: 0.8;
         }
       -webkit-transition: opacity 0.2s;
       transition: opacity 0.2s;
@@ -126,6 +122,9 @@ $stroke: #ddd;
       &.disabled {
         cursor: default;
         fill: $stroke;
+      }
+      &.accent {
+        fill: black;
       }
     }
   }
