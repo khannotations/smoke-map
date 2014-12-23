@@ -15,15 +15,42 @@
     <div id="smoke-map">
       <div id="smoke-map-data-container">
         <div id="smoke-map-data-options">
-          View <select name="smoke-map-data-type">
-            <option value="length">Length</option>
-            <option value="intensity">Intensity</option>
-            <option value="seasonLength">Season Length</option>
-            <option value="sw6">Smoke Wave 6</option>
-            <option value="sw1">Smoke Wave 1</option>
-            <option value="index">FSRI index</option>
-          </select>
-          &middot;
+          <p class="smoke-map-head">Smoke Wave Data Map</p style="font-weight: bold;">
+          <table>
+            <tr>
+              <td>Data:</td>
+              <td colspan="2">
+                <select name="smoke-map-data-type">
+                  <option value="length">Length</option>
+                  <option value="intensity">Intensity</option>
+                  <option value="seasonLength">Season Length</option>
+                  <option value="sw6">Smoke Wave 6</option>
+                  <option value="sw1">Smoke Wave 1</option>
+                  <option value="index">FSRI index</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Time:</td>
+              <td>
+                <input type="radio" name="smoke-map-time" checked="checked" data-time="present"> Present
+              </td>
+              <td>
+                <input type="radio" name="smoke-map-time" data-time="future"> Future
+              </td>
+            </tr>
+            <tr>
+              <td>View:</td>
+              <td>
+                <input type="radio" name="smoke-map-show" checked="checked" data-show="county"> County
+              </td>
+              <td>
+                <input type="radio" name="smoke-map-show" data-show="state"> State
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div id="smoke-map-sort-by" class="hidden">
           Sort by 
           <select name="smoke-map-data-sort">
             <option value="diff">Difference</option>
@@ -37,37 +64,13 @@
         </div>
       </div>
       <div id="smoke-map-legend-container">
-        <table>
-          <tr>
-            <td>View:</td>
-            <td>
-              <input type="radio" name="smoke-map-view" data-view="county"> County
-            </td>
-            <td>
-              <input type="radio" name="smoke-map-view" checked="checked" data-view="state"> State
-            </td>
-          </tr>
-          <tr>
-            <td>Coloring:</td>
-            <td>
-              <input type="radio" name="smoke-map-time" checked="checked" data-time="present"> Present
-            </td>
-            <td>
-              <input type="radio" name="smoke-map-time" data-time="future"> Future
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3">
-              Index:
-              <div class="index-block index-0">0
-              </div><div class="index-block first index-1">1
-              </div><div class="index-block index-2">2
-              </div><div class="index-block index-3">3
-              </div><div class="index-block index-4">4
-              </div><div class="index-block last index-5">5</div>
-            </td>
-          </tr>
-        </table>
+        Scale:
+        <div class="color-block color-0">0
+        </div><div class="color-block first color-1">1
+        </div><div class="color-block color-2">2
+        </div><div class="color-block color-3">3
+        </div><div class="color-block color-4">4
+        </div><div class="color-block last color-5">5</div>
       </div>
     </div>
   </div>

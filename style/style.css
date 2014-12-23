@@ -22,12 +22,21 @@
   #smoke-map-container svg {
     width: 100%;
     height: 100%;
-    position: relative; }
+    position: relative;
+    border: 1pt solid #ccc;
+    border-radius: 2px; }
+  #smoke-map-container .smoke-map-head {
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 120%; }
   #smoke-map-container #smoke-map-data-container {
     position: absolute;
-    top: 50px;
-    left: 20px;
+    top: 10px;
+    left: 10px;
     width: 320px;
+    height: 580px;
+    overflow-y: scroll;
     background-color: #eee;
     border: 1pt solid #ddd;
     border-radius: 2px;
@@ -37,27 +46,31 @@
     transition: all 0.2s; }
   #smoke-map-container #smoke-map-data-options {
     margin-bottom: 10px; }
-    #smoke-map-container #smoke-map-data-options.hidden {
+    #smoke-map-container #smoke-map-data-options td {
+      padding: 5px 10px 5px 0; }
+  #smoke-map-container #smoke-map-sort-by {
+    margin-bottom: 5px; }
+    #smoke-map-container #smoke-map-sort-by.hidden {
       display: none; }
   #smoke-map-container #smoke-map-legend-container {
     z-index: 2;
     position: absolute;
-    bottom: 0;
-    left: 20px; }
-    #smoke-map-container #smoke-map-legend-container .index-block {
+    bottom: 10px;
+    left: 340px; }
+    #smoke-map-container #smoke-map-legend-container .color-block {
       display: inline-block;
       padding: 5px 8px; }
-      #smoke-map-container #smoke-map-legend-container .index-block.index-0 {
+      #smoke-map-container #smoke-map-legend-container .color-block.color-0 {
         background-color: #fafafa; }
-      #smoke-map-container #smoke-map-legend-container .index-block.index-1 {
+      #smoke-map-container #smoke-map-legend-container .color-block.color-1 {
         background-color: #70fb5e; }
-      #smoke-map-container #smoke-map-legend-container .index-block.index-2 {
+      #smoke-map-container #smoke-map-legend-container .color-block.color-2 {
         background-color: #c3fb68; }
-      #smoke-map-container #smoke-map-legend-container .index-block.index-3 {
+      #smoke-map-container #smoke-map-legend-container .color-block.color-3 {
         background-color: #fbf45d; }
-      #smoke-map-container #smoke-map-legend-container .index-block.index-4 {
+      #smoke-map-container #smoke-map-legend-container .color-block.color-4 {
         background-color: #fbbb4b; }
-      #smoke-map-container #smoke-map-legend-container .index-block.index-5 {
+      #smoke-map-container #smoke-map-legend-container .color-block.color-5 {
         background-color: #fb6b41; }
   #smoke-map-container #states path {
     stroke: #999;
@@ -71,6 +84,10 @@
       opacity: 0.7; }
     #smoke-map-container #states.active path.selected {
       opacity: 0.8; }
+  #smoke-map-container #states .state-label {
+    fill: #fff;
+    font-weight: bold;
+    text-shadow: 0 0 2px black; }
   #smoke-map-container #counties.active path {
     opacity: 0.7; }
   #smoke-map-container #counties path {
@@ -82,15 +99,15 @@
     transition: fill 0.2s; }
     #smoke-map-container #counties path:hover {
       opacity: 0.9; }
-    #smoke-map-container #counties path.index-1 {
+    #smoke-map-container #counties path.color-1 {
       fill: #70fb5e; }
-    #smoke-map-container #counties path.index-2 {
+    #smoke-map-container #counties path.color-2 {
       fill: #c3fb68; }
-    #smoke-map-container #counties path.index-3 {
+    #smoke-map-container #counties path.color-3 {
       fill: #fbf45d; }
-    #smoke-map-container #counties path.index-4 {
+    #smoke-map-container #counties path.color-4 {
       fill: #fbbb4b; }
-    #smoke-map-container #counties path.index-5 {
+    #smoke-map-container #counties path.color-5 {
       fill: #fb6b41; }
     #smoke-map-container #counties path.selected {
       opacity: 1;
