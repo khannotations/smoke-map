@@ -5,80 +5,91 @@
  */
 /* Variables */
 /* Everything scoped inside the smoke-map div */
-.smoke-map {
+#smoke-map-container {
   /* Data container styles */
   /* Legend container styles */
   /* State layer styles */
   /* County Styles */ }
-  .smoke-map * {
-    box-sizing: border-box; }
-  .smoke-map .pull-left {
+  #smoke-map-container * {
+    box-sizing: border-box;
+    font-family: 'helvetica'; }
+  #smoke-map-container .pull-left {
     float: left; }
-  .smoke-map #smoke-map-map {
+  #smoke-map-container #smoke-map {
     width: 1000px;
     height: 600px;
     position: relative; }
-  .smoke-map svg {
+  #smoke-map-container svg {
     width: 100%;
     height: 100%;
     position: relative; }
-  .smoke-map #smoke-map-data-container {
+  #smoke-map-container #smoke-map-data-container {
     position: absolute;
-    top: 50px;
+    top: 0;
     left: 20px;
     width: 320px;
+    height: 100%;
     background-color: #eee;
     border: 1pt solid #ddd;
     border-radius: 2px;
     padding: 10px;
     z-index: 1; }
-  .smoke-map #smoke-map-legend-container {
+  #smoke-map-container #smoke-map-legend-container {
     z-index: 2;
     position: absolute;
-    bottom: 10px;
-    left: 20px; }
-    .smoke-map #smoke-map-legend-container .index-block {
+    bottom: 0;
+    left: 340px; }
+    #smoke-map-container #smoke-map-legend-container .index-block {
       display: inline-block;
       padding: 5px 8px; }
-      .smoke-map #smoke-map-legend-container .index-block.index-0 {
+      #smoke-map-container #smoke-map-legend-container .index-block.index-0 {
         background-color: #fafafa; }
-      .smoke-map #smoke-map-legend-container .index-block.index-1 {
+      #smoke-map-container #smoke-map-legend-container .index-block.index-1 {
         background-color: #70fb5e; }
-      .smoke-map #smoke-map-legend-container .index-block.index-2 {
+      #smoke-map-container #smoke-map-legend-container .index-block.index-2 {
         background-color: #c3fb68; }
-      .smoke-map #smoke-map-legend-container .index-block.index-3 {
+      #smoke-map-container #smoke-map-legend-container .index-block.index-3 {
         background-color: #fbf45d; }
-      .smoke-map #smoke-map-legend-container .index-block.index-4 {
+      #smoke-map-container #smoke-map-legend-container .index-block.index-4 {
         background-color: #fbbb4b; }
-      .smoke-map #smoke-map-legend-container .index-block.index-5 {
+      #smoke-map-container #smoke-map-legend-container .index-block.index-5 {
         background-color: #fb6b41; }
-  .smoke-map #states path {
-    stroke: #777;
-    stroke-width: 1pt;
-    fill: #ddd; }
-  .smoke-map #counties path {
-    opacity: 0.7;
+  #smoke-map-container #states path {
+    stroke: #999;
+    fill: #fafafa; }
+  #smoke-map-container #states.active path {
+    opacity: 0.4;
+    cursor: pointer;
+    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s; }
+    #smoke-map-container #states.active path:hover {
+      opacity: 0.7; }
+    #smoke-map-container #states.active path.selected {
+      opacity: 0.9; }
+  #smoke-map-container #counties.active path {
+    opacity: 0.7; }
+  #smoke-map-container #counties path {
     fill: #fafafa;
     stroke: #dddddd;
     stroke-width: 1px;
     cursor: pointer;
     -webkit-transition: fill 0.2s;
     transition: fill 0.2s; }
-    .smoke-map #counties path:hover {
+    #smoke-map-container #counties path:hover {
       opacity: 0.9; }
-    .smoke-map #counties path.index-1 {
+    #smoke-map-container #counties path.index-1 {
       fill: #70fb5e; }
-    .smoke-map #counties path.index-2 {
+    #smoke-map-container #counties path.index-2 {
       fill: #c3fb68; }
-    .smoke-map #counties path.index-3 {
+    #smoke-map-container #counties path.index-3 {
       fill: #fbf45d; }
-    .smoke-map #counties path.index-4 {
+    #smoke-map-container #counties path.index-4 {
       fill: #fbbb4b; }
-    .smoke-map #counties path.index-5 {
+    #smoke-map-container #counties path.index-5 {
       fill: #fb6b41; }
-    .smoke-map #counties path.selected {
+    #smoke-map-container #counties path.selected {
       opacity: 1;
       stroke: #444; }
-    .smoke-map #counties path.disabled {
+    #smoke-map-container #counties path.disabled {
       cursor: default;
       fill: #dddddd; }

@@ -12,14 +12,18 @@ $index-2: #c3fb68; // yellow-green
 $index-3: #fbf45d; // yellow
 $index-4: #fbbb4b; // orange
 $index-5: #fb6b41; // red
+$stroke: #ddd;
 
 /* Everything scoped inside the smoke-map div */
-.smoke-map {
+#smoke-map-container {
 
-  * { box-sizing: border-box; }
+  * {
+    box-sizing: border-box;
+    font-family: 'helvetica';
+  }
   .pull-left { float: left; }
 
-  #smoke-map-map {
+  #smoke-map {
     width: 1000px;
     height: 600px;
     position: relative;
@@ -31,10 +35,12 @@ $index-5: #fb6b41; // red
   }
 
   /* Data container styles */
+  $data-container-width: 320px;
   #smoke-map-data-container {
     position: absolute;
-    top: 50px; left: 20px;
+    top: 0; left: 20px;
     width: 320px;
+    height: 100%;
     background-color: #eee;
     border: 1pt solid #ddd;
     border-radius: 2px;
@@ -46,7 +52,7 @@ $index-5: #fb6b41; // red
   #smoke-map-legend-container {
     z-index: 2;
     position: absolute;
-    bottom: 10px; left: 20px;
+    bottom: 0; left: $data-container-width + 20px;
     .index-block {
       display: inline-block;
       padding: 5px 8px;
@@ -62,17 +68,33 @@ $index-5: #fb6b41; // red
   /* State layer styles */
   #states {
     path {
-      stroke: #777;
-      stroke-width: 1pt;
-      fill: #ddd;
+      stroke: #999;
+      fill: #fafafa;
+    }
+    &.active {
+      path {
+        opacity: 0.4;
+        cursor: pointer;
+        &:hover {
+          opacity: 0.7;
+        }
+        &.selected {
+          opacity: 0.9;
+        }
+      -webkit-transition: opacity 0.2s;
+      transition: opacity 0.2s;
+      }
     }
   }
 
   /* County Styles */
-  $stroke: #ddd;
   #counties {
+    &.active {
+      path {
+        opacity: 0.7;  // Transparency is required so state layer shows up
+      }
+    }
     path {
-      opacity: 0.7;  // Transparency is required so state layer shows up
       fill: $index-0;
       stroke: $stroke;
       stroke-width: 1px;

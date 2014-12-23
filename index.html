@@ -10,23 +10,45 @@
   <script src="./scripts/jsrender.min.js"></script>
   <script src="./scripts/polymaps.min.js"></script>
   <script src="./scripts/highcharts-custom.js"></script>
+  <script src="./scripts/underscore-min.js"></script>
   <script src="./scripts/script.js"></script>
-  <div class="smoke-map">
-    <div id="smoke-map-map">
+  <div id="smoke-map-container">
+    <div id="smoke-map">
       <div id="smoke-map-data-container">
         <em>Choose a country or a state to view its data.</em>
       </div>
       <div id="smoke-map-legend-container">
-        <input type="radio" name="smoke-map-time" checked="checked" data-time="present"> Present values
-        <input type="radio" name="smoke-map-time" data-time="future"> Future values
-        &middot;
-        Index:
-        <div class="index-block index-0">0
-        </div><div class="index-block first index-1">1
-        </div><div class="index-block index-2">2
-        </div><div class="index-block index-3">3
-        </div><div class="index-block index-4">4
-        </div><div class="index-block last index-5">5</div>
+        <table>
+          <tr>
+            <td>View:</td>
+            <td>
+              <input type="radio" name="smoke-map-view" data-view="county"> County
+            </td>
+            <td>
+              <input type="radio" name="smoke-map-view" checked="checked" data-view="state"> State
+            </td>
+          </tr>
+          <tr>
+            <td>Data:</td>
+            <td>
+              <input type="radio" name="smoke-map-time" checked="checked" data-time="present"> Present
+            </td>
+            <td>
+              <input type="radio" name="smoke-map-time" data-time="future"> Future
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3">
+              Index:
+              <div class="index-block index-0">0
+              </div><div class="index-block first index-1">1
+              </div><div class="index-block index-2">2
+              </div><div class="index-block index-3">3
+              </div><div class="index-block index-4">4
+              </div><div class="index-block last index-5">5</div>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
