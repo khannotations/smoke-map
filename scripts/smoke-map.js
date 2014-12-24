@@ -58,13 +58,13 @@ function smokeMap() {
       values: [0, 10, 15, 20, 25, 30, 50], // 8 stops
     },
     sw1: {
-      values: [0, 0.7, 1.3, 2, 2.7, 3.3, 4],
+      values: [0, 0.7, 1.3, 2, 2.7, 3.3, 4], // 8 stops
     },
     sw6: {
-      values: [0, 4, 8, 12, 16, 20, 24],
+      values: [0, 4, 8, 12, 16, 20, 24], // 8 stops (sw1 * 6)
     },
     index: {
-      values: [0, 1, 2, 3, 4, 5]
+      values: [0, 1, 2, 3, 4, 5] // Only 6 stops (special cased)
     },
 
   },
@@ -171,13 +171,15 @@ function smokeMap() {
         $(f.element).attr("name", p["NAME"]);// Add county name as "name" attr
       }
     });
-    colorMap(); // Color the map
+    colorMap();
+    // Click handlers for county paths (shows county data in data panel)
     $("#counties path").click(function(e) {
         var elem = $(e.currentTarget);
         showCountyData(elem.attr("fips"), elem.attr("name"));
         removeClass($("path.selected"), "selected"); // Remove prev highlight
         addClass(elem, "selected");                  // Highlight clicked county 
       });
+    // Hover handler (updates tooltip)
     $("#counties path:not(.disabled)").hover(function(e) {
         var elem = $(e.currentTarget)
         var fips = elem.attr("fips");
@@ -192,8 +194,7 @@ function smokeMap() {
   }
 
   /*
-   * Attaches change handlers to inputs to update the view when options are 
-   * changed.
+   * Attaches change handlers to update the view when options are changed.
    */
   function attachInputChangeHandlers() {
     // Attach event handlers to checkboxes
@@ -227,6 +228,9 @@ function smokeMap() {
     });
   }
 
+  /*
+   * Colors the entire map depending on VIEW.colorBy, and adjusts the legend.
+   */
   function colorMap() {
     var values = COLOR_STOPS[VIEW.colorBy].values;
     $(".color-block").hide();
@@ -251,7 +255,7 @@ function smokeMap() {
     });
   }
   /* 
-   * Given a county feature, assigns correct class depending on 
+   * Given a county element, assigns color class depending on 
    * given mode. The element must have a 'fips' attribute.
    */
   function colorCounty(element) {
@@ -276,24 +280,25 @@ function smokeMap() {
     VIEW.currentFips = fips || VIEW.currentFips;
     VIEW.currentName = name || VIEW.currentName;
     var data = STATE_DATA[VIEW.currentFips];
+    console.log(VIEW.stateDataType, data);
     if (!data) {
       return;
     }
     var counties = [], presentData = [], futureData = [], diffData = [];
     var sortedData = _.sortBy(data, function(d) {
-      var pd = d[KEYS.present[VIEW.stateDataType]],
-          ft = d[KEYS.future[VIEW.stateDataType]],
+      var presentVal = d[KEYS.present[VIEW.stateDataType]],
+          futureVal = d[KEYS.future[VIEW.stateDataType]],
           fips = d["FIPS"],
           toReturn;
       switch(VIEW.stateSortBy) {  // Sort by correct value
         case "present":
-          toReturn = pd;
+          toReturn = presentVal;
           break;
         case "future":
-          toReturn = ft;
+          toReturn = futureVal;
           break;
         case "diff":
-          toReturn = ft-pd;
+          toReturn = futureVal-presentVal;
           break;
         default:
           toReturn = fips;
@@ -303,12 +308,13 @@ function smokeMap() {
     $.each(sortedData, function(i, d) {
       // Remove 'County' from county name and add (fips code).
       counties.push(d["COUNTY"].replace(" County", "")+" ("+d["FIPS"]+")");
-      var pd = d[KEYS.present[VIEW.stateDataType]] || 0,
-          ft = d[KEYS.future[VIEW.stateDataType]] || 0,
-          diff = Math.round((ft-pd)*100) / 100, // Round to two decimal places
+      var presentVal = d[KEYS.present[VIEW.stateDataType]] || 0,
+          futureVal = d[KEYS.future[VIEW.stateDataType]] || 0,
+          // Round to two decimal places
+          diff = Math.round((futureVal-presentVal)*100) / 100,
           fips = d["FIPS"] || "";
-      presentData.push({y: pd, fips: fips});
-      futureData.push({y: ft, fips: fips});
+      presentData.push({y: presentVal, fips: fips});
+      futureData.push({y: futureVal, fips: fips});
       diffData.push({y: diff, fips: fips});
     });
     $("#smoke-map-data-container").addClass("active");
@@ -329,9 +335,7 @@ function smokeMap() {
         }
       },
       yAxis: {
-        title: {
-          text: null
-        }
+        title: { text: null }
       },
       series: [
         { name: "Present", data: presentData },
@@ -339,6 +343,7 @@ function smokeMap() {
         { name: "Difference", data: diffData },
       ],
       tooltip: { enabled: false },
+      // Accents counties on hover
       plotOptions: {
         bar: {
           point: {
@@ -367,7 +372,9 @@ function smokeMap() {
     $("#smoke-map-state-options").removeClass("hidden");
   }
   /*
-   * Given a fips code, populates the data-container div with the proper chart.
+   * Given a fips code, populates the data-container div with the proper chart
+   * for the county indicated by the fips code, or the last county shown
+   * if no fips code is given.
    */
   function showCountyData(fips) {
     // Store values in case we need to update view
@@ -402,9 +409,7 @@ function smokeMap() {
           })
         },
         yAxis: {
-          title: {
-            text: null
-          }
+          title: { text: null }
         },
         tooltip: { enabled: false }
       });
@@ -429,9 +434,7 @@ function smokeMap() {
           })
         },
         yAxis: {
-          title: {
-            text: null
-          }
+          title: { text: null }
         },
         tooltip: { enabled: false }
       });
@@ -443,11 +446,15 @@ function smokeMap() {
   function buildDom() {
     var i, newDiv = "<div></div>",
         root = $(newDiv).attr("id", "smoke-map"),
+        // Top-left controls
         controlC = $(newDiv).attr("id", "smoke-map-control-container")
           .addClass("smoke-map-content-container"),
+        // Bottom-left data panel
         dataC = $(newDiv).attr("id", "smoke-map-data-container")
           .addClass("smoke-map-content-container"),
+        // Bottom center legend
         legendC = $(newDiv).attr("id", "smoke-map-legend-container")
+
     // Control container
     var colorOptions = [];
     $.each(["index", "sw1", "sw6", "length", "intensity"], function(i, key) {
@@ -457,6 +464,7 @@ function smokeMap() {
       $("<tr></tr>").append(
         $("<td></td>").text("Color by:"),
         $("<td></td>").attr("colspan", 2).append(
+          // Color by <select> element
           $("<select></select>").attr("name", "smoke-map-color-by")
             .append(colorOptions)
         )
@@ -498,21 +506,21 @@ function smokeMap() {
         createOption("population", "Population Data")
       )
     )
-    var stateSortOptions = [];
+    var stateDataTypeOptions = [];
     $.each(["sw1", "sw6", "length", "intensity", "index"], function(i, key) {
-      stateSortOptions.push(createOption(key, KEY_TO_NAME[key]));
+      stateDataTypeOptions.push(createOption(key, KEY_TO_NAME[key]));
     });
     var stateOptions = $(newDiv).attr("id", "smoke-map-state-options").append(
       document.createTextNode("Data: "),
       $("<select></select>").attr("name", "smoke-map-state-data-type").append(
+        stateDataTypeOptions
+      ),
+      document.createTextNode("· Sort: "),
+      $("<select></select>").attr("name", "smoke-map-state-data-sort").append(
         createOption("diff", "Difference"),
         createOption("present", "Present"),
         createOption("future", "Future"),
         createOption("fips", "FIPS code")
-      ),
-      document.createTextNode("&middot; Sort: "),
-      $("<select></select>").attr("name", "smoke-map-state-data-sort").append(
-        stateSortOptions
       )
     );
     dataC.append(
@@ -524,6 +532,7 @@ function smokeMap() {
     // Legend container
     i = 0;
     while (i < 9) {
+      // 8 legend containers for colors
       legendC.append($(newDiv).addClass("color-block color-"+i)
         .append($(newDiv).addClass("text")));
       i++;
@@ -533,6 +542,7 @@ function smokeMap() {
     $("#smoke-map-container").append(root);
   }
 
+  /* Creates an <input> with type radio, and given values */
   function createRadio(name, dataVal, checked) {
     return $("<input type='radio'/>")
       .attr("name", "smoke-map-"+name)
@@ -540,10 +550,15 @@ function smokeMap() {
       .attr("checked", checked)
   }
 
+  /* Creates an <option> element */
   function createOption(val, text) {
     return $("<option></option>").attr("value", val).text(text);
   }
 
+  /*
+   * Switches between viewing data and not viewing data. Called VIEW.dataView
+   * is changed.
+   */
   function adjustView() {
     $("#smoke-map-county-options").addClass("hidden");
     $("#smoke-map-state-options").addClass("hidden");
@@ -561,6 +576,11 @@ function smokeMap() {
     removeClass($("path.selected"), "selected");
   }
 
+  /*
+   * Makes the labels for the state layer. Uses the 'abbr' attribute of each
+   * element. Calculates center of shape, but special cases some oddly-shaped
+   * states.
+   */
   function makeStateLabels() {
     $("#states path").each(function(i, p) {
       var abbr = $(p).attr("abbr");
