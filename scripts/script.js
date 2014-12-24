@@ -9,13 +9,13 @@ function smokeMap() {
   var COUNTY_DATA, STATE_DATA, po, map, stateLayer, countyLayer,
   KEYS = { // All data keys
     future: {
+      index: "Future_index2",
+      sw1: "Future_SWnum1y",
+      sw6: "Future_SWnum6y",
+      swDay: "Future_SWdaynum",
       length: "Future_length",
       intensity: "Future_intensity",
       seasonLength: "Future_seasonlength",
-      sw6: "Future_SWnum6y",
-      sw1: "Future_SWnum1y",
-      swDay: "Future_SWdaynum",
-      index: "Future_index2"
     },
     present: {
       length: "PD_length",
@@ -25,6 +25,14 @@ function smokeMap() {
       sw1: "PD_SWnum1y",
       swDay: "PD_SWdaynum",
       index: "PD_index2"
+    },
+    population: {
+      a1_2050: "Y2050A1",
+      a2_2050: "Y2050A2",
+      b1_2050: "Y2050B1",
+      b2_2050: "Y2050B2",
+      bc_2050: "Y2050BC",
+      y_2005: "Y2005"
     }
   },
   KEY_TO_NAME = { // Key name to pretty, canonical name
@@ -34,7 +42,31 @@ function smokeMap() {
     sw6: "Smoke Wave 6",
     sw1: "Smoke Wave 1",
     swDay: "Smoke Wave Num Days",
-    index: "FSRI index"
+    index: "FSRI index",
+    a1_2050: "2050 Pop., A1",
+    a2_2050: "2050 Pop., A2",
+    b1_2050: "2050 Pop., B1",
+    b2_2050: "2050 Pop., B2",
+    bc_2050: "2050 Pop., BC",
+    y_2005: "2005 Pop.",
+  },
+  COLOR_STOPS = {
+    length: {
+      values: [0, 2, 2.5, 3, 3.5, 4, 4.5], // 7 stops
+    },
+    intensity: {
+      values: [0, 10, 15, 20, 25, 30, 50], // 8 stops
+    },
+    sw1: {
+      values: [0, 0.7, 1.3, 2, 2.7, 3.3, 4],
+    },
+    sw6: {
+      values: [0, 4, 8, 12, 16, 20, 24],
+    },
+    index: {
+      values: [0, 1, 2, 3, 4, 5]
+    },
+
   },
   // Classes for different colors
   CLASSES = ["color-0", "color-1", "color-2", "color-3", "color-4", "color-5",
@@ -42,8 +74,11 @@ function smokeMap() {
   VIEW = { // Variables to control whats shown in the data container.
     time: "present",
     show: "county",
+    colorBy: "index",
     dataType: "length",
-    sortBy: "diff",
+    countyDataType: "smoke",
+    stateSortBy: "diff",
+    stateDataType: "sw1",
     currentName: undefined,
     currentFips: undefined
   },
@@ -66,7 +101,12 @@ function smokeMap() {
         $(f.element).attr("fips", p["STATE"]);
         $(f.element).attr("abbr", p["ABBR"]);
       });
-      attachPathClickHandlers("#states");     // Attach click handlers
+      $("#states path").click(function(e) {
+        var elem = $(e.currentTarget);
+        showStateData(elem.attr("abbr"), elem.attr("name"));
+        removeClass($("path.selected"), "selected"); // Remove previous highlight
+        addClass(elem, "selected");                  // Highlight clicked state 
+      });
       makeStateLabels();
     });
     
@@ -80,15 +120,16 @@ function smokeMap() {
   attachInputChangeHandlers(); 
 
   $.getJSON("./data/all_sw.json", function(data) { // Get geoJSON data
-    COUNTY_DATA = data;
+    COUNTY_DATA = {};
     STATE_DATA = {};
     $.each(data, function(i, d) { // Build state map from county data
-      var stateFips = d["STATE_FIPS"];
+      COUNTY_DATA[d["FIPS"]] = d;
+      var stateFips = d["STATE"];
       STATE_DATA[stateFips] = STATE_DATA[stateFips] || [];
       STATE_DATA[stateFips].push(d);
       // Convert each key to a number if it can be.
       $.each(d, function(key, value) {
-        if (!isNaN(parseFloat(value))) {
+        if (key !== "FIPS" && !isNaN(parseFloat(value))) {
           d[key] = parseFloat(value);
         }
       })
@@ -127,30 +168,28 @@ function smokeMap() {
         // Store fips and name on each <path> element.
         $(f.element).attr("fips", fips);     // Add fips code as "fips" attr
         $(f.element).attr("name", p["NAME"]);// Add county name as "name" attr
-        colorCounty(f.element);              // Color the county accordingly
       }
     });
-    attachPathClickHandlers("#counties");
-  }
-
-  /*
-   * Attaches click handlers on <path> elements so sidebar
-   * shows data when clicked. Used for both state and county paths.
-   * Pass in '#states' (or whatever was used for the state layer id) to attach
-   * to state <path>s, or '#counties' for the county <path>s.
-   */
-  function attachPathClickHandlers(parentId) {
-    // Attach event handlers to available paths
-    $(parentId + " path:not(.disabled)").click(function(e) {
-      var elem = $(e.currentTarget);
-      var fips = elem.attr("fips");
-      // If the FIPS code is 5 long, show county data. Otherwise show state data.
-      fips.length === 5 ? showCountyData(fips, elem.attr("name")) :
-        showStateData(fips, elem.attr("name"));
-      removeClass($("path.selected"), "selected"); // Remove previous highlight
-      addClass(elem, "selected");                  // Highlight clicked county 
+    colorMap(); // Color the map
+    $("#counties path").click(function(e) {
+        var elem = $(e.currentTarget);
+        showCountyData(elem.attr("fips"), elem.attr("name"));
+        removeClass($("path.selected"), "selected"); // Remove previous highlight
+        addClass(elem, "selected");                  // Highlight clicked county 
+      });
+    $("#counties path:not(.disabled)").hover(function(e) {
+        var elem = $(e.currentTarget)
+        var fips = elem.attr("fips");
+        var name = elem.attr("name");
+        var html = "<b>" + name + " (" +  fips + ")</b><br>" +
+          KEY_TO_NAME[VIEW.colorBy] + " (" + VIEW.time + "): " +
+          COUNTY_DATA[fips][KEYS[VIEW.time][VIEW.colorBy]];
+        $("#smoke-map-tooltip").html(html).show();
+    }, function(e) {
+      $("#smoke-map-tooltip").hide();
     });
   }
+
   /*
    * Attaches change handlers to inputs to update the view when options are 
    * changed.
@@ -159,10 +198,7 @@ function smokeMap() {
     // Attach event handlers to checkboxes
     $("input[name='smoke-map-time']").change(function(e) {
       VIEW.time = $(e.currentTarget).data("time");
-      // Recolor map
-      $.each($("#counties path"), function(i, p) {
-        colorCounty(p);
-      });
+      colorMap(); // Recolor map
     });
     // Attach event handlers to checkboxes
     $("input[name='smoke-map-show']").change(function(e) {
@@ -171,13 +207,45 @@ function smokeMap() {
       adjustView();
     });
     // Attach select event handlers
-    $("select[name='smoke-map-data-type']").change(function(e) {
-      VIEW.dataType = $(this).val();
+    $("select[name='smoke-map-color-by']").change(function(e) {
+      VIEW.colorBy = $(this).val();
+      showStateData();
+      colorMap();
+    });
+    $("select[name='smoke-map-state-data-sort']").change(function(e) {
+      VIEW.stateSortBy = $(this).val();
       showStateData();
     });
-    $("select[name='smoke-map-data-sort']").change(function(e) {
-      VIEW.sortBy = $(this).val();
+    $("select[name='smoke-map-state-data-type']").change(function(e) {
+      VIEW.stateDataType = $(this).val();
       showStateData();
+    });
+    $("select[name='smoke-map-county-data-type']").change(function(e) {
+      VIEW.countyDataType = $(this).val();
+      showCountyData();
+    });
+  }
+
+  function colorMap() {
+    var values = COLOR_STOPS[VIEW.colorBy].values;
+    $(".color-block").hide();
+    $.each(values, function(index, val) {
+      var elem = $(".color-"+index);
+      var text;
+      if (VIEW.colorBy === "index" || index === 0) {
+        text = index + "";
+      } else {
+        text = values[index-1] + " - " + values[index];
+      }
+      $(elem).find(".text").text(text);
+      $(elem).show();
+    });
+    if (VIEW.colorBy !== "index") {
+      $(".color-"+values.length).find(".text").text("> " + values[values.length-1]);
+      $(".color-"+values.length).show();
+    }
+    $.each($("#counties path"), function(i, p) {
+      colorCounty(p);
     });
   }
   /* 
@@ -186,9 +254,15 @@ function smokeMap() {
    */
   function colorCounty(element) {
     var fips = $(element).attr("fips");
-    var key = KEYS[VIEW.time].index;
+    var key = KEYS[VIEW.time][VIEW.colorBy];
+    var val = COUNTY_DATA[fips][key];
+    var values = COLOR_STOPS[VIEW.colorBy].values;
+    var index = 0;
+    while(values[index] !== undefined && val > values[index]) {
+      index++;
+    }
     // Get the corresponding color class from the 'classes' array.
-    var c = CLASSES[COUNTY_DATA[fips][key]];
+    var c = CLASSES[index];
     $.each(CLASSES, function(i, c) {
       removeClass(element, c); // Remove any previous classes
     });
@@ -204,11 +278,11 @@ function smokeMap() {
     }
     var counties = [], presentData = [], futureData = [], diffData = [];
     var sortedData = _.sortBy(data, function(d) {
-      var pd = d[KEYS.present[VIEW.dataType]],
-          ft = d[KEYS.future[VIEW.dataType]],
+      var pd = d[KEYS.present[VIEW.stateDataType]],
+          ft = d[KEYS.future[VIEW.stateDataType]],
           fips = d["FIPS"],
           toReturn;
-      switch(VIEW.sortBy) {  // Sort by correct value
+      switch(VIEW.stateSortBy) {  // Sort by correct value
         case "present":
           toReturn = pd;
           break;
@@ -226,10 +300,10 @@ function smokeMap() {
     $.each(sortedData, function(i, d) {
       // Remove 'County' from county name and add (fips code).
       counties.push(d["COUNTY"].replace(" County", "") + " (" + d["FIPS"] + ")");
-      var pd = d[KEYS.present[VIEW.dataType]],
-          ft = d[KEYS.future[VIEW.dataType]],
+      var pd = d[KEYS.present[VIEW.stateDataType]] || 0,
+          ft = d[KEYS.future[VIEW.stateDataType]] || 0,
           diff = Math.round((ft-pd)*100) / 100, // Round to two decimal places
-          fips = d["FIPS"];
+          fips = d["FIPS"] || "";
       presentData.push({y: pd, fips: fips});
       futureData.push({y: ft, fips: fips});
       diffData.push({y: diff, fips: fips});
@@ -239,7 +313,11 @@ function smokeMap() {
       chart: { type: 'bar' },
       title: {
         align: "left",
-        text: VIEW.currentName + " · " + KEY_TO_NAME[VIEW.dataType]
+        text: VIEW.currentName + " · " + KEY_TO_NAME[VIEW.stateDataType]
+      },
+      subtitle: {
+        align: "left",
+        text: "Data shown by county"
       },
       xAxis: {
         categories: counties,
@@ -247,11 +325,17 @@ function smokeMap() {
           style: {"fontSize": "60%"}
         }
       },
+      yAxis: {
+        title: {
+          text: null
+        }
+      },
       series: [
         { name: "Present", data: presentData },
         { name: "Future", data: futureData },
         { name: "Difference", data: diffData },
       ],
+      tooltip: { enabled: false },
       plotOptions: {
         bar: {
           point: {
@@ -268,53 +352,91 @@ function smokeMap() {
       }
     });
     var chart = $(DATA_CONTAINER_ID).highcharts();
-    if (VIEW.sortBy !== "present" && VIEW.sortBy !== "fips") {
+    if (VIEW.stateSortBy !== "present" && VIEW.stateSortBy !== "fips") {
       chart.series[0].hide();
     }
-    if (VIEW.sortBy !== "future") {
+    if (VIEW.stateSortBy !== "future") {
       chart.series[1].hide();
     }
-    if (VIEW.sortBy !== "diff") {
+    if (VIEW.stateSortBy !== "diff") {
       chart.series[2].hide();
     }
-    $("#smoke-map-sort-by").removeClass("hidden");
+    $("#smoke-map-state-options").removeClass("hidden");
   }
   /*
    * Given a fips code, populates the data-container div with the proper chart.
    */
   function showCountyData(fips) {
-    var data = COUNTY_DATA[fips];
+    VIEW.currentFips = fips || VIEW.currentFips; // Store values in case we need to update view
+    VIEW.currentName = name || VIEW.currentName;
+    var data = COUNTY_DATA[VIEW.currentFips];
     if (!data) {
       return;
     }
-    var countyKeys = ["seasonLength", "intensity", "length", "sw1", "sw6", "swDay"];
-    var presentData = [];
-    var futureData = [];
-    $.each(countyKeys, function(i, key) {
-      presentData.push(data[KEYS.present[key]]);
-      futureData.push(data[KEYS.future[key]]);
-    });
-    $(DATA_CONTAINER_ID).highcharts({
-      chart: { type: 'bar' },
-      title: {
-        align: "left",
-        text: data["COUNTY"] + " (" + data["STATE"] + ")"
-      },
-      xAxis: {
-        categories: _.map(countyKeys, function(key) {
-          return KEY_TO_NAME[key];
-        })
-      },
-      series: [
-        { name: "Present", data: presentData },
-        { name: "Future", data: futureData }
-      ]
-    });
+    if (VIEW.countyDataType === "smoke") {
+      var countyKeys = ["sw1", "sw6", "swDay", "seasonLength", "intensity", "length"];
+      var presentData = [];
+      var futureData = [];
+      $.each(countyKeys, function(i, key) {
+        presentData.push(data[KEYS.present[key]] || 0);
+        futureData.push(data[KEYS.future[key]] || 0);
+      });
+      $(DATA_CONTAINER_ID).highcharts({
+        chart: { type: 'bar' },
+        title: {
+          align: "left",
+          text: data["COUNTY"] + " (" + data["STATE"] + ")"
+        },
+        series: [
+          { name: "Present", data: presentData },
+          { name: "Future", data: futureData }
+        ],
+        xAxis: {
+          categories: _.map(countyKeys, function(key) {
+            return KEY_TO_NAME[key];
+          })
+        },
+        yAxis: {
+          title: {
+            text: null
+          }
+        },
+        tooltip: { enabled: false }
+      });
+    } else {
+      var populationKeys = _.keys(KEYS.population);
+      var populationData = [];
+      $.each(populationKeys, function(i, key) {
+        populationData.push(data[KEYS.population[key]]);
+      });
+      $(DATA_CONTAINER_ID).highcharts({
+        chart: { type: 'bar' },
+        title: {
+          align: "left",
+          text: data["COUNTY"] + " (" + data["STATE"] + ")"
+        },
+        series: [
+          { name: "Population", data: populationData },
+        ],
+        xAxis: {
+          categories: _.map(populationKeys, function(key) {
+            return KEY_TO_NAME[key];
+          })
+        },
+        yAxis: {
+          title: {
+            text: null
+          }
+        },
+        tooltip: { enabled: false }
+      });
+    }
+    $("#smoke-map-county-options").removeClass("hidden");
   }
 
   function adjustView() {
-    removeClass($("path.selected"), "selected");
-    $("#smoke-map-data-sort").addClass("hidden");
+    $("#smoke-map-county-options").addClass("hidden");
+    $("#smoke-map-state-options").addClass("hidden");
     if (VIEW.show === "county") {
       $(DATA_CONTAINER_ID).html("<em>Choose a county to view its data</em>");
       map.add(stateLayer).add(countyLayer); // County layer on top
@@ -326,6 +448,7 @@ function smokeMap() {
       removeClass($("#counties"), "active");
       addClass($("#states"), "active");
     }
+    removeClass($("path.selected"), "selected");
   }
 
   function makeStateLabels() {
@@ -378,8 +501,8 @@ function smokeMap() {
     }
   }
   function addClass_(elem, newClass) {
-    var c = $(elem).attr("class");
-    if (!c || c.indexOf(newClass) === -1) { // Not already added
+    var c = $(elem).attr("class") || "";
+    if (newClass && (c.indexOf(newClass) === -1)) { // Not already added
       $(elem).attr("class", c + " " + newClass);
     }
   }
@@ -393,10 +516,7 @@ function smokeMap() {
     }
   }
   function removeClass_(elem, rmClass) {
-    var cs = $(elem).attr("class");
-    if (!cs) {
-      return;
-    }
+    var cs = $(elem).attr("class") || "";
     cs = cs.split(" ");
     var i = cs.indexOf(rmClass);
     if (i !== -1) {

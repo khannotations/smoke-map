@@ -30,27 +30,30 @@
     margin-top: 0;
     margin-bottom: 5px;
     font-size: 120%; }
-  #smoke-map-container #smoke-map-data-container {
+  #smoke-map-container .smoke-map-content-container {
     position: absolute;
-    top: 10px;
-    left: 10px;
     width: 320px;
-    height: 580px;
-    overflow-y: scroll;
+    left: 10px;
+    font-size: 12px;
     background-color: #eee;
     border: 1pt solid #ddd;
     border-radius: 2px;
     padding: 10px;
-    z-index: 1;
-    -webkit-transition: all 0.2s;
-    transition: all 0.2s; }
-  #smoke-map-container #smoke-map-data-options {
-    margin-bottom: 10px; }
-    #smoke-map-container #smoke-map-data-options td {
-      padding: 5px 10px 5px 0; }
-  #smoke-map-container #smoke-map-sort-by {
+    z-index: 1; }
+  #smoke-map-container #smoke-map-control-container {
+    top: 10px;
+    height: 115px; }
+  #smoke-map-container #smoke-map-data-container {
+    top: 135px;
+    height: 455px;
+    overflow-y: scroll; }
+  #smoke-map-container #smoke-map-data {
+    height: 390px; }
+  #smoke-map-container #smoke-map-data-options td {
+    padding: 3px 5px 3px 0; }
+  #smoke-map-container #smoke-map-county-options, #smoke-map-container #smoke-map-state-options {
     margin-bottom: 5px; }
-    #smoke-map-container #smoke-map-sort-by.hidden {
+    #smoke-map-container #smoke-map-county-options.hidden, #smoke-map-container #smoke-map-state-options.hidden {
       display: none; }
   #smoke-map-container #smoke-map-legend-container {
     z-index: 2;
@@ -59,7 +62,10 @@
     left: 340px; }
     #smoke-map-container #smoke-map-legend-container .color-block {
       display: inline-block;
-      padding: 5px 8px; }
+      padding: 5px 8px;
+      font-size: 10px;
+      width: 60px;
+      text-align: center; }
       #smoke-map-container #smoke-map-legend-container .color-block.color-0 {
         background-color: #fafafa; }
       #smoke-map-container #smoke-map-legend-container .color-block.color-1 {
@@ -72,9 +78,18 @@
         background-color: #fbbb4b; }
       #smoke-map-container #smoke-map-legend-container .color-block.color-5 {
         background-color: #fb6b41; }
+      #smoke-map-container #smoke-map-legend-container .color-block.color-6 {
+        background-color: #df4434; }
+      #smoke-map-container #smoke-map-legend-container .color-block.color-7 {
+        background-color: #922c21; }
+      #smoke-map-container #smoke-map-legend-container .color-block.color-8 {
+        background-color: black; }
+      #smoke-map-container #smoke-map-legend-container .color-block .text {
+        margin-top: -20px; }
   #smoke-map-container #states path {
     stroke: #999;
-    fill: #fafafa; }
+    fill: #fafafa;
+    opacity: 0.4; }
   #smoke-map-container #states.active path {
     opacity: 0.4;
     cursor: pointer;
@@ -83,13 +98,14 @@
     #smoke-map-container #states.active path:hover {
       opacity: 0.7; }
     #smoke-map-container #states.active path.selected {
-      opacity: 0.8; }
+      opacity: 0.8;
+      stroke: #444; }
   #smoke-map-container #states .state-label {
     fill: #fff;
     font-weight: bold;
     text-shadow: 0 0 2px black; }
   #smoke-map-container #counties.active path {
-    opacity: 0.7; }
+    opacity: 0.75; }
   #smoke-map-container #counties path {
     fill: #fafafa;
     stroke: #dddddd;
@@ -97,8 +113,6 @@
     cursor: pointer;
     -webkit-transition: fill 0.2s;
     transition: fill 0.2s; }
-    #smoke-map-container #counties path:hover {
-      opacity: 0.9; }
     #smoke-map-container #counties path.color-1 {
       fill: #70fb5e; }
     #smoke-map-container #counties path.color-2 {
@@ -109,6 +123,14 @@
       fill: #fbbb4b; }
     #smoke-map-container #counties path.color-5 {
       fill: #fb6b41; }
+    #smoke-map-container #counties path.color-6 {
+      fill: #df4434; }
+    #smoke-map-container #counties path.color-7 {
+      fill: #922c21; }
+    #smoke-map-container #counties path.color-8 {
+      fill: black; }
+    #smoke-map-container #counties path:hover {
+      opacity: 0.9; }
     #smoke-map-container #counties path.selected {
       opacity: 1;
       stroke: #444; }
@@ -117,3 +139,15 @@
       fill: #dddddd; }
     #smoke-map-container #counties path.accent {
       fill: black; }
+  #smoke-map-container #smoke-map-tooltip {
+    display: none;
+    position: absolute;
+    left: 350px;
+    bottom: 70px;
+    width: 190px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1pt solid #999;
+    border-radius: 2px;
+    font-size: 12px;
+    z-index: 5; }

@@ -12,6 +12,9 @@ $color-2: #c3fb68; // yellow-green
 $color-3: #fbf45d; // yellow
 $color-4: #fbbb4b; // orange
 $color-5: #fb6b41; // red
+$color-6: #df4434; // dark-red
+$color-7: #922c21; // black-red
+$color-8: #000;    // black
 $stroke: #ddd;
 
 /* Everything scoped inside the smoke-map div */
@@ -44,30 +47,44 @@ $stroke: #ddd;
     margin-bottom: 5px;
     font-size: 120%;
   }
+  
   $data-container-width: 320px;
-  #smoke-map-data-container {
+  .smoke-map-content-container {
     position: absolute;
-    top: 10px; left: 10px;
-    width: 320px;
-    height: $map-height - 20px;
-    overflow-y: scroll;
+    width: $data-container-width;
+    left: 10px;
+    font-size: 12px;
     background-color: #eee;
     border: 1pt solid #ddd;
     border-radius: 2px;
     padding: 10px;
     z-index: 1;
-    -webkit-transition: all 0.2s;
-    transition: all 0.2s;
+  }
+
+  $control-height: 115px;
+  #smoke-map-control-container {
+    top: 10px;
+    height: $control-height;
+  }
+
+  $data-container-height: $map-height - (30px + $control-height);
+  #smoke-map-data-container {
+    top: $control-height + 20px;
+    height: $data-container-height;
+    overflow-y: scroll;
+  }
+
+  #smoke-map-data {
+    height: $data-container-height - 65px;
   }
 
   #smoke-map-data-options {
-    margin-bottom: 10px;
     td {
-      padding: 5px 10px 5px 0;
+      padding: 3px 5px 3px 0;
     }
   }
 
-  #smoke-map-sort-by {
+  #smoke-map-county-options, #smoke-map-state-options {
     margin-bottom: 5px;
     &.hidden {
       display: none;
@@ -82,12 +99,21 @@ $stroke: #ddd;
     .color-block {
       display: inline-block;
       padding: 5px 8px;
+      font-size: 10px;
+      width: 60px;
+      text-align: center;
       &.color-0 { background-color: $color-0; }
       &.color-1 { background-color: $color-1; }
       &.color-2 { background-color: $color-2; }
       &.color-3 { background-color: $color-3; }
       &.color-4 { background-color: $color-4; }
       &.color-5 { background-color: $color-5; }
+      &.color-6 { background-color: $color-6; }
+      &.color-7 { background-color: $color-7; }
+      &.color-8 { background-color: $color-8; }
+      .text {
+        margin-top: -20px;
+      }
     }
   }
 
@@ -96,6 +122,7 @@ $stroke: #ddd;
     path {
       stroke: #999;
       fill: #fafafa;
+      opacity: 0.4;
     }
     &.active {
       path {
@@ -106,6 +133,7 @@ $stroke: #ddd;
         }
         &.selected {
           opacity: 0.8;
+          stroke: #444;
         }
       -webkit-transition: opacity 0.2s;
       transition: opacity 0.2s;
@@ -122,7 +150,7 @@ $stroke: #ddd;
   #counties {
     &.active {
       path {
-        opacity: 0.7;  // Transparency is required so state layer shows up
+        opacity: 0.75;  // Transparency is required so state layer shows up
       }
     }
     path {
@@ -132,12 +160,15 @@ $stroke: #ddd;
       cursor: pointer;
       -webkit-transition: fill 0.2s;
       transition: fill 0.2s;
-      &:hover { opacity: 0.9; } // Raise opacity on hover
       &.color-1 { fill: $color-1; }
       &.color-2 { fill: $color-2; }
       &.color-3 { fill: $color-3; }
       &.color-4 { fill: $color-4; }
       &.color-5 { fill: $color-5; }
+      &.color-6 { fill: $color-6; }
+      &.color-7 { fill: $color-7; }
+      &.color-8 { fill: $color-8; }
+      &:hover { opacity: 0.9; } // Raise opacity on hover
       &.selected {
         opacity: 1;
         stroke: #444;
@@ -150,5 +181,18 @@ $stroke: #ddd;
         fill: black;
       }
     }
+  }
+
+  #smoke-map-tooltip {
+    display: none;
+    position: absolute;
+    left: 350px; bottom: 70px;
+    width: 190px;
+    padding: 10px;
+    background-color: rgba(white, 0.9);
+    border: 1pt solid #999;
+    border-radius: 2px;
+    font-size: 12px;
+    z-index: 5;
   }
 }

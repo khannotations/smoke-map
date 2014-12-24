@@ -6,6 +6,12 @@
   <link rel="stylesheet" href="./style/style.css">
 </head>
 <body>
+<!--
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/polymaps/2.5.1/polymaps.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.0.4/highcharts.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+  -->
   <script src="./scripts/jquery-2.1.3.min.js"></script>
   <script src="./scripts/polymaps.min.js"></script>
   <script src="./scripts/highcharts-custom.js"></script>
@@ -13,20 +19,27 @@
   <script src="./scripts/script.js"></script>
   <div id="smoke-map-container">
     <div id="smoke-map">
-      <div id="smoke-map-data-container">
+      <div id="smoke-map-tooltip"></div>
+      <div class="smoke-map-content-container" id="smoke-map-control-container">
         <div id="smoke-map-data-options">
-          <p class="smoke-map-head">Smoke Wave Data Map</p style="font-weight: bold;">
+          <p class="smoke-map-head">Smoke Wave Map: Color Controls</p style="font-weight: bold;">
           <table>
             <tr>
-              <td>Data:</td>
+              <td>Color by:</td>
               <td colspan="2">
-                <select name="smoke-map-data-type">
+                <select name="smoke-map-color-by">
+                  <option value="index">FSRI index</option>
+                  <option value="sw1">Smoke Wave 1</option>
+                  <option value="sw6">Smoke Wave 6</option>
                   <option value="length">Length</option>
                   <option value="intensity">Intensity</option>
-                  <option value="seasonLength">Season Length</option>
-                  <option value="sw6">Smoke Wave 6</option>
-                  <option value="sw1">Smoke Wave 1</option>
-                  <option value="index">FSRI index</option>
+                  <!-- <option disabled>───────</option>
+                  <option value="a1_2050">2050 Pop., A1</option>
+                  <option value="a2_2050">2050 Pop., A2</option>
+                  <option value="b1_2050">2050 Pop., B1</option>
+                  <option value="b2_2050">2050 Pop., B2</option>
+                  <option value="bc_2050">2050 Pop., BC</option>
+                  <option value="y_2050">2005 Pop.</option> -->
                 </select>
               </td>
             </tr>
@@ -50,27 +63,50 @@
             </tr>
           </table>
         </div>
-        <div id="smoke-map-sort-by" class="hidden">
-          Sort by 
-          <select name="smoke-map-data-sort">
-            <option value="diff">Difference</option>
-            <option value="present">Present</option>
-            <option value="future">Future</option>
-            <option value="fips">FIPS code</option>
+      </div>
+      <div class="smoke-map-content-container" id="smoke-map-data-container">
+        <p class="smoke-map-head">Smoke Wave Map: View Data</p style="font-weight: bold;">
+        <div id="smoke-map-county-options">
+          Data:
+          <select name="smoke-map-county-data-type">
+            <option value="smoke">Smoke Data</option>
+            <option value="population">Population Data</option>
           </select>
+        </div>
+        <div id="smoke-map-state-options">
+          <div id="smoke-map-sort-by" class="hidden">
+            Data: 
+            <select name="smoke-map-state-data-type">
+              <option value="sw1">Smoke Wave 1</option>
+              <option value="sw6">Smoke Wave 6</option>
+              <option value="length">Length</option>
+              <option value="intensity">Intensity</option>
+              <option value="index">FSRI index</option>
+            </select>
+            &middot; Sort: 
+            <select name="smoke-map-state-data-sort">
+              <option value="diff">Difference</option>
+              <option value="present">Present</option>
+              <option value="future">Future</option>
+              <option value="fips">FIPS code</option>
+            </select>
+          </div>
         </div>
         <div id="smoke-map-data">
           <em>Choose a country or a state to view its data.</em>
         </div>
       </div>
       <div id="smoke-map-legend-container">
-        Scale:
-        <div class="color-block color-0">0
-        </div><div class="color-block first color-1">1
-        </div><div class="color-block color-2">2
-        </div><div class="color-block color-3">3
-        </div><div class="color-block color-4">4
-        </div><div class="color-block last color-5">5</div>
+        <div class="color-block color-0"><div class="text">0</div>
+        </div><div class="color-block color-1"><div class="text">1.5-2.5</div>
+        </div><div class="color-block color-2"><div class="text">2</div>
+        </div><div class="color-block color-3"><div class="text">3</div>
+        </div><div class="color-block color-4"><div class="text">4</div>
+        </div><div class="color-block color-5"><div class="text">5</div>
+        </div><div class="color-block color-6"><div class="text">6</div>
+        </div><div class="color-block color-7"><div class="text">7</div>
+        </div><div class="color-block color-8"><div class="text">8</div></div>
+        </div>
       </div>
     </div>
   </div>
