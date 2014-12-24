@@ -6,7 +6,16 @@ By Rafi Khan, Winter 2014
 
 ### General Notes
 
-The smoke wave map starts with an HTML file called `index.html`, which contains the code for the sidebar and the container for the map. Everything else is generated via Javascript, in the file `scripts/script.js`.  The stylesheet is written with SASS, and is in `src/style.scss`. The compiled stylesheet that is included in `index.html` is in `style/style.css`. It is **not advised** to edit this `.css` file.  The map pulls all of its data from the `data` directory. 
+The smoke wave map starts with an HTML file called `index.html`, which contains the code for the sidebar and the container for the map. Everything else is generated via Javascript, in the file `scripts/smoke-map.js`.  The stylesheet is written with SASS, and is in `src/style.scss`. The compiled stylesheet that is included in `index.html` is in `style/smoke-map.css`. It is **not advised** to edit this `.css` file.  The map pulls all of its data from the `data` directory. 
+
+### Using the Map
+
+To use the map on another webpage, follow these steps:
+
+1. Add a div with the id `smoke-map-container` wherever you want the map to appear.
+2. Make sure to include jQuery, Polymaps, Highcharts, and Underscore. The code to do that can be copied from `index.html`.
+3. Include `smoke-map.js` *after* the above libraries.
+4. Include `smoke-map.css`.
 
 ### Data
 
@@ -34,15 +43,19 @@ The `all_sw.json` file must be formatted as an array of objects that contain all
 
 The easiest way to edit the data is to start with an Excel spreadsheet where the column names are the data keys (for example `"STATE"`, `"FIPS"`, and `"Future_length"`), like `data/all_data.xlsx`. Then, export that file as a CSV; it should look like `all_data.csv`. Next, paste the CSV into a CSV to JSON converter like [codebeautify.org/csv-to-xml-json](http://codebeautify.org/csv-to-xml-json), convert to JSON and replace all the content in `all_sw.json`. **Note that as of this writing, the column name for PD_seasonLength is misspelled, and must be corrected for the site to work**.
 
-If you'd like to add new data fields, the `scripts/script.js` file must be updated to reflect the new keys. Place the field names in the `KEYS` array, in either the `present` or `future` category, and also make sure to add the canonical name to the `KEYS_TO_NAMES` object.
+If you'd like to add new data fields, the `scripts/smoke-map.js` file must be updated to reflect the new keys. Place the field names in the `KEYS` array, in either the `present` or `future` category, and also make sure to add the canonical name to the `KEYS_TO_NAMES` object.
+
+### HTML
+
+The HTML is built entirely from the Javascript. To change the structure of the HTML or to add custom elements, refer to the `buildDom` function in the Javascript file. 
 
 ### Javascript 
 
-The map depends on 4 libraries: jQuery, Underscore.js (for data manipulation), Polymaps.js (for the map), and Highcharts.js (for the charts). The rest of the code (commented) is in the file `scripts/script.js`. 
+The map depends on 4 libraries: jQuery, Underscore.js (for data manipulation), Polymaps.js (for the map), and Highcharts.js (for the charts). The rest of the code (commented) is in the file `scripts/smoke-map.js`. 
 
 ### Styling
 
-Styling is done through SASS css. To write and compile your own SASS code, first download SASS. Then change to the site directory in Terminal and run `sass --watch src:style`. Any changes you make in `src/style.scss` will automatically be reflected in `style/style.css`. 
+Styling is done through SASS css. To write and compile your own SASS code, first download SASS. Then change to the site directory in Terminal and run `sass --watch src:style`. Any changes you make in `src/style.scss` will automatically be reflected in `style/smoke-map.css`. 
 
 ##### Changing the colors
 
