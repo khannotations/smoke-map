@@ -202,7 +202,6 @@ function smokeMap() {
             c, dataString;
         if (name !== oldName) {
           c = elem.attr("class") || "";
-          console.log(c);
           if (c.indexOf("disabled") !== -1) {
             dataString = "No SW";
             $("#smoke-map-tooltip").addClass("disabled");
