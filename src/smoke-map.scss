@@ -15,7 +15,7 @@ $color-5: #fb6b41; // red
 $color-6: #df4434; // dark-red
 $color-7: #922c21; // black-red
 $color-8: #000;    // black
-$stroke: #ddd;
+$stroke: #999;
 
 /* Everything scoped inside the smoke-map div */
 #smoke-map-container {
@@ -96,7 +96,7 @@ $stroke: #ddd;
     z-index: 2;
     position: absolute;
     bottom: 10px; left: $data-container-width + 20px;
-    .color-block {
+    .legend-block {
       display: inline-block;
       padding: 5px 8px;
       font-size: 10px;
@@ -120,12 +120,17 @@ $stroke: #ddd;
   /* State layer styles */
   #states {
     path {
-      stroke: #999;
+      stroke: black;
       fill: #fafafa;
       opacity: 0.4;
     }
+    .state-label {
+      fill: black;
+      font-weight: bold;
+    }
     &.active {
       path {
+        stroke: #333;
         opacity: 0.4;
         cursor: pointer;
         &:hover {
@@ -138,11 +143,9 @@ $stroke: #ddd;
       -webkit-transition: opacity 0.2s;
       transition: opacity 0.2s;
       }
-    }
-    .state-label {
-      fill: #fff;
-      font-weight: bold;
-      text-shadow: 0 0 2px rgba(black, 1);
+      .state-label {
+        fill: #333;
+      }
     }
   }
 
@@ -155,7 +158,8 @@ $stroke: #ddd;
     }
     path {
       fill: $color-0;
-      stroke: $stroke;
+      stroke: rgba($stroke, 0.5);
+      // stroke: $stroke;
       stroke-width: 1px;
       cursor: pointer;
       -webkit-transition: fill 0.2s;
@@ -168,14 +172,16 @@ $stroke: #ddd;
       &.color-6 { fill: $color-6; }
       &.color-7 { fill: $color-7; }
       &.color-8 { fill: $color-8; }
-      &:hover { opacity: 0.9; } // Raise opacity on hover
-      &.selected {
-        opacity: 1;
-        stroke: #444;
+      &:not(.disabled) {
+        &:hover { opacity: 0.9; } // Raise opacity on hover
+        &.selected {
+          opacity: 1;
+          stroke: #444;
+        }
       }
       &.disabled {
         cursor: default;
-        fill: $stroke;
+        fill: #ccc;
       }
       &.accent {
         fill: black;
@@ -186,8 +192,9 @@ $stroke: #ddd;
   #smoke-map-tooltip {
     display: none;
     position: absolute;
-    left: 350px; bottom: 70px;
-    width: 190px;
+    left: $data-container-width + 20px;
+    bottom: 50px;
+    width: 210px;
     padding: 10px;
     background-color: rgba(white, 0.9);
     border: 1pt solid #999;

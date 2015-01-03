@@ -60,37 +60,41 @@
     position: absolute;
     bottom: 10px;
     left: 340px; }
-    #smoke-map-container #smoke-map-legend-container .color-block {
+    #smoke-map-container #smoke-map-legend-container .legend-block {
       display: inline-block;
       padding: 5px 8px;
       font-size: 10px;
       width: 60px;
       text-align: center; }
-      #smoke-map-container #smoke-map-legend-container .color-block.color-0 {
+      #smoke-map-container #smoke-map-legend-container .legend-block.color-0 {
         background-color: #fafafa; }
-      #smoke-map-container #smoke-map-legend-container .color-block.color-1 {
+      #smoke-map-container #smoke-map-legend-container .legend-block.color-1 {
         background-color: #70fb5e; }
-      #smoke-map-container #smoke-map-legend-container .color-block.color-2 {
+      #smoke-map-container #smoke-map-legend-container .legend-block.color-2 {
         background-color: #c3fb68; }
-      #smoke-map-container #smoke-map-legend-container .color-block.color-3 {
+      #smoke-map-container #smoke-map-legend-container .legend-block.color-3 {
         background-color: #fbf45d; }
-      #smoke-map-container #smoke-map-legend-container .color-block.color-4 {
+      #smoke-map-container #smoke-map-legend-container .legend-block.color-4 {
         background-color: #fbbb4b; }
-      #smoke-map-container #smoke-map-legend-container .color-block.color-5 {
+      #smoke-map-container #smoke-map-legend-container .legend-block.color-5 {
         background-color: #fb6b41; }
-      #smoke-map-container #smoke-map-legend-container .color-block.color-6 {
+      #smoke-map-container #smoke-map-legend-container .legend-block.color-6 {
         background-color: #df4434; }
-      #smoke-map-container #smoke-map-legend-container .color-block.color-7 {
+      #smoke-map-container #smoke-map-legend-container .legend-block.color-7 {
         background-color: #922c21; }
-      #smoke-map-container #smoke-map-legend-container .color-block.color-8 {
+      #smoke-map-container #smoke-map-legend-container .legend-block.color-8 {
         background-color: black; }
-      #smoke-map-container #smoke-map-legend-container .color-block .text {
+      #smoke-map-container #smoke-map-legend-container .legend-block .text {
         margin-top: -20px; }
   #smoke-map-container #states path {
-    stroke: #999;
+    stroke: black;
     fill: #fafafa;
     opacity: 0.4; }
+  #smoke-map-container #states .state-label {
+    fill: black;
+    font-weight: bold; }
   #smoke-map-container #states.active path {
+    stroke: #333;
     opacity: 0.4;
     cursor: pointer;
     -webkit-transition: opacity 0.2s;
@@ -100,15 +104,13 @@
     #smoke-map-container #states.active path.selected {
       opacity: 0.8;
       stroke: #444; }
-  #smoke-map-container #states .state-label {
-    fill: #fff;
-    font-weight: bold;
-    text-shadow: 0 0 2px black; }
+  #smoke-map-container #states.active .state-label {
+    fill: #333; }
   #smoke-map-container #counties.active path {
     opacity: 0.75; }
   #smoke-map-container #counties path {
     fill: #fafafa;
-    stroke: #dddddd;
+    stroke: rgba(153, 153, 153, 0.5);
     stroke-width: 1px;
     cursor: pointer;
     -webkit-transition: fill 0.2s;
@@ -129,22 +131,22 @@
       fill: #922c21; }
     #smoke-map-container #counties path.color-8 {
       fill: black; }
-    #smoke-map-container #counties path:hover {
+    #smoke-map-container #counties path:not(.disabled):hover {
       opacity: 0.9; }
-    #smoke-map-container #counties path.selected {
+    #smoke-map-container #counties path:not(.disabled).selected {
       opacity: 1;
       stroke: #444; }
     #smoke-map-container #counties path.disabled {
       cursor: default;
-      fill: #dddddd; }
+      fill: #ccc; }
     #smoke-map-container #counties path.accent {
       fill: black; }
   #smoke-map-container #smoke-map-tooltip {
     display: none;
     position: absolute;
-    left: 350px;
-    bottom: 70px;
-    width: 190px;
+    left: 340px;
+    bottom: 50px;
+    width: 210px;
     padding: 10px;
     background-color: rgba(255, 255, 255, 0.9);
     border: 1pt solid #999;
