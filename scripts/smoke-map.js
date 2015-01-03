@@ -16,6 +16,7 @@ function smokeMap() {
       length: "Future_length",
       intensity: "Future_intensity",
       seasonLength: "Future_seasonlength",
+      population: "Y2050A1",
     },
     present: {
       length: "PD_length",
@@ -24,7 +25,8 @@ function smokeMap() {
       sw6: "PD_SWnum6y",
       sw1: "PD_SWnum1y",
       swDay: "PD_SWdaynum",
-      index: "PD_index2"
+      index: "PD_index2",
+      population: "Y2005",
     },
     population: {
       a1_2050: "Y2050A1",
@@ -36,11 +38,11 @@ function smokeMap() {
     }
   },
   KEY_TO_NAME = { // Key name to pretty, canonical name
-    length: "Length",
-    intensity: "Intensity",
-    seasonLength: "Season Length",
-    sw6: "Smoke Wave 6",
-    sw1: "Smoke Wave 1",
+    length: "SW Length",
+    intensity: "SW Intensity",
+    seasonLength: "Length of SW Season",
+    sw6: "# SWs in 6 yrs",
+    // sw1: "Smoke Wave 1",
     swDay: "Smoke Wave Num Days",
     index: "FSRI index",
     a1_2050: "2050 Pop., A1",
@@ -68,9 +70,6 @@ function smokeMap() {
     },
 
   },
-  // Classes for different colors
-  CLASSES = ["color-0", "color-1", "color-2", "color-3", "color-4", "color-5",
-    "color-6", "color-7", "color-8"],
   VIEW = { // Variables to control whats shown in the data container.
     time: "present",
     show: "county",
@@ -82,7 +81,7 @@ function smokeMap() {
     currentName: undefined,
     currentFips: undefined
   },
-  DATA_CONTAINER_ID = "#smoke-map-data";
+  DATA_DIV_ID = "#smoke-map-data";
 
   /* Start code */
   buildDom(); // Start by building all necessary elements
@@ -259,33 +258,32 @@ function smokeMap() {
    * given mode. The element must have a 'fips' attribute.
    */
   function colorCounty(element) {
-    var fips = $(element).attr("fips");
-    var key = KEYS[VIEW.time][VIEW.colorBy];
-    var val = COUNTY_DATA[fips][key];
-    var values = COLOR_STOPS[VIEW.colorBy].values;
-    var index = 0;
+    var fips = $(element).attr("fips"),
+        key = KEYS[VIEW.time][VIEW.colorBy],
+        val = COUNTY_DATA[fips][key],
+        values = COLOR_STOPS[VIEW.colorBy].values,
+        index = 0;
+    // Determine the intensity index by counting up
     while(values[index] !== undefined && val > values[index]) {
       index++;
     }
-    // Get the corresponding color class from the 'classes' array.
-    var c = CLASSES[index];
-    $.each(CLASSES, function(i, c) {
-      removeClass(element, c); // Remove any previous classes
-    });
-    addClass(element, c);      // Add correct class
+    for (var i = 0; i < 9; i++) {
+      removeClass(element, "color-" + i); // Remove any previous color classes
+    }
+    addClass(element, "color-" + index);  // Add new color class
   }
 
   function showStateData(fips, name) {
-    // Store values in case we need to update view
+    // Store values in case we need to update view without parameters. 
     VIEW.currentFips = fips || VIEW.currentFips;
     VIEW.currentName = name || VIEW.currentName;
     var data = STATE_DATA[VIEW.currentFips];
-    console.log(VIEW.stateDataType, data);
     if (!data) {
       return;
     }
     var counties = [], presentData = [], futureData = [], diffData = [];
     var sortedData = _.sortBy(data, function(d) {
+      // Sort data correctly. 
       var presentVal = d[KEYS.present[VIEW.stateDataType]],
           futureVal = d[KEYS.future[VIEW.stateDataType]],
           fips = d["FIPS"],
@@ -306,7 +304,7 @@ function smokeMap() {
       return toReturn;
     });
     $.each(sortedData, function(i, d) {
-      // Remove 'County' from county name and add (fips code).
+      // Remove "County" from county name and add "(fips code)".
       counties.push(d["COUNTY"].replace(" County", "")+" ("+d["FIPS"]+")");
       var presentVal = d[KEYS.present[VIEW.stateDataType]] || 0,
           futureVal = d[KEYS.future[VIEW.stateDataType]] || 0,
@@ -318,7 +316,7 @@ function smokeMap() {
       diffData.push({y: diff, fips: fips});
     });
     $("#smoke-map-data-container").addClass("active");
-    $(DATA_CONTAINER_ID).highcharts({
+    $(DATA_DIV_ID).highcharts({
       chart: { type: 'bar' },
       title: {
         align: "left",
@@ -359,7 +357,7 @@ function smokeMap() {
         }
       }
     });
-    var chart = $(DATA_CONTAINER_ID).highcharts();
+    var chart = $(DATA_DIV_ID).highcharts();
     if (VIEW.stateSortBy !== "present" && VIEW.stateSortBy !== "fips") {
       chart.series[0].hide();
     }
@@ -385,7 +383,7 @@ function smokeMap() {
       return;
     }
     if (VIEW.countyDataType === "smoke") {
-      var countyKeys = ["sw1", "sw6", "swDay", "seasonLength", "intensity",
+      var countyKeys = ["sw6", "swDay", "seasonLength", "intensity",
       "length"];
       var presentData = [];
       var futureData = [];
@@ -393,7 +391,7 @@ function smokeMap() {
         presentData.push(data[KEYS.present[key]] || 0);
         futureData.push(data[KEYS.future[key]] || 0);
       });
-      $(DATA_CONTAINER_ID).highcharts({
+      $(DATA_DIV_ID).highcharts({
         chart: { type: 'bar' },
         title: {
           align: "left",
@@ -419,7 +417,7 @@ function smokeMap() {
       $.each(populationKeys, function(i, key) {
         populationData.push(data[KEYS.population[key]]);
       });
-      $(DATA_CONTAINER_ID).highcharts({
+      $(DATA_DIV_ID).highcharts({
         chart: { type: 'bar' },
         title: {
           align: "left",
@@ -563,12 +561,12 @@ function smokeMap() {
     $("#smoke-map-county-options").addClass("hidden");
     $("#smoke-map-state-options").addClass("hidden");
     if (VIEW.show === "county") {
-      $(DATA_CONTAINER_ID).html("<em>Choose a county to view its data</em>");
+      $(DATA_DIV_ID).html("<em>Choose a county to view its data</em>");
       map.add(stateLayer).add(countyLayer); // County layer on top
       removeClass($("#states"), "active");
       addClass($("#counties"), "active");
     } else {
-      $(DATA_CONTAINER_ID).html("<em>Choose a state to view its data</em>");
+      $(DATA_DIV_ID).html("<em>Choose a state to view its data</em>");
       map.add(countyLayer).add(stateLayer); // State layer on top
       removeClass($("#counties"), "active");
       addClass($("#states"), "active");
