@@ -5,8 +5,7 @@
  */
 .container {
   width: 960px;
-  margin: 0 auto;
-  border: 1pt solid black; }
+  margin: 0 auto; }
 
 /* Variables */
 /* Everything scoped inside the smoke-map div */
