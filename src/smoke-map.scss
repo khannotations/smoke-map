@@ -4,6 +4,12 @@
  * December 22, 2014
  */
 
+.container {
+  width: 960px;
+  margin: 0 auto;
+  border: 1pt solid black;
+}
+
 /* Variables */
 // County index colors
 $color-0: #fafafa; // grey
@@ -25,7 +31,7 @@ $stroke: #999;
   }
   .pull-left { float: left; }
 
-  $map-width: 1000px;
+  $map-width: 960px;
   $map-height: 600px;
   #smoke-map {
     width: $map-width;
@@ -118,7 +124,7 @@ $stroke: #999;
   }
 
   /* State layer styles */
-  #states {
+  #smoke-map-states {
     path {
       stroke: black;
       fill: #fafafa;
@@ -150,7 +156,7 @@ $stroke: #999;
   }
 
   /* County Styles */
-  #counties {
+  #smoke-map-counties {
     &.active {
       path {
         opacity: 0.75;  // Transparency is required so state layer shows up
@@ -193,13 +199,16 @@ $stroke: #999;
     display: none;
     position: absolute;
     left: $data-container-width + 20px;
-    bottom: 50px;
+    bottom: 45px;
     width: 210px;
-    padding: 10px;
+    padding: 8px;
     background-color: rgba(white, 0.9);
     border: 1pt solid #999;
     border-radius: 2px;
     font-size: 12px;
     z-index: 5;
+    &.disabled {
+      color: #999;
+    }
   }
 }

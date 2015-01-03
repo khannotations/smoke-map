@@ -70,7 +70,7 @@ function smokeMap() {
   },
   VIEW = { // Variables to control whats shown in the data container.
     time: "present",
-    show: "county",
+    layer: "county",
     colorBy: "index",
     dataType: "length",
     countyDataType: "smoke",
@@ -87,11 +87,11 @@ function smokeMap() {
   map = po.map()
     .container(document.getElementById("smoke-map").appendChild(po.svg("svg")))
     .zoom(5)
-    .center({lat: 40, lon: -121.5});
+    .center({lat: 40, lon: -121});
 
   stateLayer = po.geoJson()                   // Load state shapes
     .url("./data/states.json")
-    .id("states")
+    .id("smoke-map-states")
     .on("load", function(e) {
       $.each(e.features, function(i, f) {     // Attach name, abbr, fips code to
         var p = f.data.properties;            // to each state <path> element
@@ -99,14 +99,15 @@ function smokeMap() {
         $(f.element).attr("fips", p["STATE"]);
         $(f.element).attr("abbr", p["ABBR"]);
       });
-      $("#states").click(function(e) {
+      $("#smoke-map-states").click(function(e) {
+        // Attach handler to #smoke-map-states element because we add and remove <path>s
         var elem = $(e.target), parent = elem.parent();
         if (e.target.tagName === "path") {
           showStateData(elem.attr("abbr"), elem.attr("name"));
           removeClass($("path.selected"), "selected");// Remove prev highlight
           addClass(elem, "selected");                 // Highlight clicked state
           // Rearrange the element so its the last one of its parent, and full
-          // outline shows up
+          // outline shows up when selected
           elem.remove();
           parent.append(elem);
         }
@@ -116,7 +117,7 @@ function smokeMap() {
     
   countyLayer = po.geoJson() // Load county shapes
     .url("./data/counties.json")
-    .id("counties")
+    .id("smoke-map-counties")
     .on("load", function(e) {
       preparePaths(e); // On load, prepare paths
     });
@@ -146,8 +147,7 @@ function smokeMap() {
     if (arePathsPrepared) { // Don't run if already run
       return;
     }
-    // Only go if GeoJSON is loaded
-    if (COUNTY_DATA === undefined) {
+    if (COUNTY_DATA === undefined) { // Don't go if data is not loaded
       if (requestCount < 10) {
         requestCount++;
         console.log("JSON not ready, trying again: try #"+ requestCount);
@@ -176,7 +176,7 @@ function smokeMap() {
     });
     colorMap();
     // Click handlers for county paths (shows county data in data panel)
-    $("#counties").click(function(e) {
+    $("#smoke-map-counties").click(function(e) {
         var elem = $(e.target),
             parent = elem.parent();
         if (e.target.tagName === "path" &&
@@ -193,7 +193,7 @@ function smokeMap() {
       });
     // Updates tooltip
     var oldName;
-    $("#counties").mouseenter(function() {
+    $("#smoke-map-counties").mouseenter(function() {
       $("#smoke-map-tooltip").show();
     }).mousemove(function(e) {
         var elem = $(e.target),
@@ -205,8 +205,10 @@ function smokeMap() {
           console.log(c);
           if (c.indexOf("disabled") !== -1) {
             dataString = "No SW";
+            $("#smoke-map-tooltip").addClass("disabled");
           } else {
             dataString = COUNTY_DATA[fips][KEYS[VIEW.time][VIEW.colorBy]];
+            $("#smoke-map-tooltip").removeClass("disabled");
           }
           var html = "<b>" + name + " (" +  fips + ")</b><br>" +
             KEY_TO_NAME[VIEW.colorBy] + " (" + VIEW.time + "): " + dataString;
@@ -228,8 +230,8 @@ function smokeMap() {
       colorMap(); // Recolor map
     });
     // Attach event handlers to checkboxes
-    $("input[name='smoke-map-show']").change(function(e) {
-      VIEW.show = $(e.currentTarget).data("show");
+    $("input[name='smoke-map-layer']").change(function(e) {
+      VIEW.layer = $(e.currentTarget).data("layer");
       map.remove(countyLayer).remove(stateLayer)
       adjustView();
     });
@@ -275,7 +277,7 @@ function smokeMap() {
         values[values.length-1]);
       $(".color-"+values.length).show();
     }
-    $.each($("#counties path"), function(i, p) {
+    $.each($("#smoke-map-counties path"), function(i, p) {
       colorCounty(p);
     });
   }
@@ -503,13 +505,13 @@ function smokeMap() {
         )
       ),
       $("<tr></tr>").append(
-        $("<td></td>").text("View:"),
+        $("<td></td>").text("Layer:"),
         $("<td></td>").append(
-          createRadio("show", "county", "checked"),
+          createRadio("layer", "county", "checked"),
           document.createTextNode("Counties")
         ),
         $("<td></td>").append(
-          createRadio("show", "state"),
+          createRadio("layer", "state"),
           document.createTextNode("States")
         )
       )
@@ -581,16 +583,16 @@ function smokeMap() {
   function adjustView() {
     $("#smoke-map-county-options").addClass("hidden");
     $("#smoke-map-state-options").addClass("hidden");
-    if (VIEW.show === "county") {
+    if (VIEW.layer === "county") {
       $(DATA_DIV_ID).html("<em>Choose a county to view its data</em>");
       map.add(stateLayer).add(countyLayer); // County layer on top
-      removeClass($("#states"), "active");
-      addClass($("#counties"), "active");
+      removeClass($("#smoke-map-states"), "active");
+      addClass($("#smoke-map-counties"), "active");
     } else {
       $(DATA_DIV_ID).html("<em>Choose a state to view its data</em>");
       map.add(countyLayer).add(stateLayer); // State layer on top
-      removeClass($("#counties"), "active");
-      addClass($("#states"), "active");
+      removeClass($("#smoke-map-counties"), "active");
+      addClass($("#smoke-map-states"), "active");
     }
     // Unselect any selected paths
     removeClass($("path.selected"), "selected");
@@ -602,7 +604,7 @@ function smokeMap() {
    * states.
    */
   function makeStateLabels() {
-    $("#states path").each(function(i, p) {
+    $("#smoke-map-states path").each(function(i, p) {
       var abbr = $(p).attr("abbr"),
           center = findPathCenter(p), // The center of the element
           label = document.createElementNS("http://www.w3.org/2000/svg",'text');

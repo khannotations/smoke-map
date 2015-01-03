@@ -3,6 +3,11 @@
  * Rafi Khan
  * December 22, 2014
  */
+.container {
+  width: 960px;
+  margin: 0 auto;
+  border: 1pt solid black; }
+
 /* Variables */
 /* Everything scoped inside the smoke-map div */
 #smoke-map-container {
@@ -16,7 +21,7 @@
   #smoke-map-container .pull-left {
     float: left; }
   #smoke-map-container #smoke-map {
-    width: 1000px;
+    width: 960px;
     height: 600px;
     position: relative; }
   #smoke-map-container svg {
@@ -86,70 +91,72 @@
         background-color: black; }
       #smoke-map-container #smoke-map-legend-container .legend-block .text {
         margin-top: -20px; }
-  #smoke-map-container #states path {
+  #smoke-map-container #smoke-map-states path {
     stroke: black;
     fill: #fafafa;
     opacity: 0.4; }
-  #smoke-map-container #states .state-label {
+  #smoke-map-container #smoke-map-states .state-label {
     fill: black;
     font-weight: bold; }
-  #smoke-map-container #states.active path {
+  #smoke-map-container #smoke-map-states.active path {
     stroke: #333;
     opacity: 0.4;
     cursor: pointer;
     -webkit-transition: opacity 0.2s;
     transition: opacity 0.2s; }
-    #smoke-map-container #states.active path:hover {
+    #smoke-map-container #smoke-map-states.active path:hover {
       opacity: 0.7; }
-    #smoke-map-container #states.active path.selected {
+    #smoke-map-container #smoke-map-states.active path.selected {
       opacity: 0.8;
       stroke: #444; }
-  #smoke-map-container #states.active .state-label {
+  #smoke-map-container #smoke-map-states.active .state-label {
     fill: #333; }
-  #smoke-map-container #counties.active path {
+  #smoke-map-container #smoke-map-counties.active path {
     opacity: 0.75; }
-  #smoke-map-container #counties path {
+  #smoke-map-container #smoke-map-counties path {
     fill: #fafafa;
     stroke: rgba(153, 153, 153, 0.5);
     stroke-width: 1px;
     cursor: pointer;
     -webkit-transition: fill 0.2s;
     transition: fill 0.2s; }
-    #smoke-map-container #counties path.color-1 {
+    #smoke-map-container #smoke-map-counties path.color-1 {
       fill: #70fb5e; }
-    #smoke-map-container #counties path.color-2 {
+    #smoke-map-container #smoke-map-counties path.color-2 {
       fill: #c3fb68; }
-    #smoke-map-container #counties path.color-3 {
+    #smoke-map-container #smoke-map-counties path.color-3 {
       fill: #fbf45d; }
-    #smoke-map-container #counties path.color-4 {
+    #smoke-map-container #smoke-map-counties path.color-4 {
       fill: #fbbb4b; }
-    #smoke-map-container #counties path.color-5 {
+    #smoke-map-container #smoke-map-counties path.color-5 {
       fill: #fb6b41; }
-    #smoke-map-container #counties path.color-6 {
+    #smoke-map-container #smoke-map-counties path.color-6 {
       fill: #df4434; }
-    #smoke-map-container #counties path.color-7 {
+    #smoke-map-container #smoke-map-counties path.color-7 {
       fill: #922c21; }
-    #smoke-map-container #counties path.color-8 {
+    #smoke-map-container #smoke-map-counties path.color-8 {
       fill: black; }
-    #smoke-map-container #counties path:not(.disabled):hover {
+    #smoke-map-container #smoke-map-counties path:not(.disabled):hover {
       opacity: 0.9; }
-    #smoke-map-container #counties path:not(.disabled).selected {
+    #smoke-map-container #smoke-map-counties path:not(.disabled).selected {
       opacity: 1;
       stroke: #444; }
-    #smoke-map-container #counties path.disabled {
+    #smoke-map-container #smoke-map-counties path.disabled {
       cursor: default;
       fill: #ccc; }
-    #smoke-map-container #counties path.accent {
+    #smoke-map-container #smoke-map-counties path.accent {
       fill: black; }
   #smoke-map-container #smoke-map-tooltip {
     display: none;
     position: absolute;
     left: 340px;
-    bottom: 50px;
+    bottom: 45px;
     width: 210px;
-    padding: 10px;
+    padding: 8px;
     background-color: rgba(255, 255, 255, 0.9);
     border: 1pt solid #999;
     border-radius: 2px;
     font-size: 12px;
     z-index: 5; }
+    #smoke-map-container #smoke-map-tooltip.disabled {
+      color: #999; }
