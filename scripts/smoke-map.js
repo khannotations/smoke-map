@@ -49,10 +49,10 @@ function smokeMap() {
     bc_2050: "2050 Pop., BC",
     y_2005: "2005 Pop.",
   },
-  MAX_COLORS = 9,
+  MAX_COLORS = 8,
   COLOR_STOPS = {
     length: {
-      values: [0, 2, 2.5, 3, 3.5, 4, 4.5], // 7 colors
+      values: [0, 2, 2.5, 3, 3.5, 4, 4.5], // 6 stops => 7 colors
     },
     intensity: {
       values: [0, 10, 15, 20, 25, 30, 50], // 8 colors
@@ -66,7 +66,6 @@ function smokeMap() {
     index: {
       values: [0, 1, 2, 3, 4, 5] // Only 6 colors (special cased)
     },
-
   },
   VIEW = { // Variables to control whats shown in the data container.
     time: "present",
