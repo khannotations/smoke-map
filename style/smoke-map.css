@@ -59,37 +59,58 @@
     margin-bottom: 5px; }
     #smoke-map-container #smoke-map-county-options.hidden, #smoke-map-container #smoke-map-state-options.hidden {
       display: none; }
-  #smoke-map-container #smoke-map-legend-container {
+  #smoke-map-container .smoke-map-legend-container {
     z-index: 2;
     position: absolute;
     bottom: 10px;
-    left: 340px; }
-    #smoke-map-container #smoke-map-legend-container .legend-block {
+    left: 340px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 2px; }
+    #smoke-map-container .smoke-map-legend-container.top {
+      bottom: 38px; }
+    #smoke-map-container .smoke-map-legend-container.hidden {
+      display: none; }
+    #smoke-map-container .smoke-map-legend-container .legend-block {
       display: inline-block;
       padding: 5px 8px;
-      font-size: 10px;
-      width: 60px;
+      font-size: 8.5px;
+      width: 65px;
       text-align: center; }
-      #smoke-map-container #smoke-map-legend-container .legend-block.color-0 {
+      #smoke-map-container .smoke-map-legend-container .legend-block.color-0 {
         background-color: #fafafa; }
-      #smoke-map-container #smoke-map-legend-container .legend-block.color-1 {
+      #smoke-map-container .smoke-map-legend-container .legend-block.color-1 {
         background-color: #70fb5e; }
-      #smoke-map-container #smoke-map-legend-container .legend-block.color-2 {
+      #smoke-map-container .smoke-map-legend-container .legend-block.color-2 {
         background-color: #c3fb68; }
-      #smoke-map-container #smoke-map-legend-container .legend-block.color-3 {
+      #smoke-map-container .smoke-map-legend-container .legend-block.color-3 {
         background-color: #fbf45d; }
-      #smoke-map-container #smoke-map-legend-container .legend-block.color-4 {
+      #smoke-map-container .smoke-map-legend-container .legend-block.color-4 {
         background-color: #fbbb4b; }
-      #smoke-map-container #smoke-map-legend-container .legend-block.color-5 {
+      #smoke-map-container .smoke-map-legend-container .legend-block.color-5 {
         background-color: #fb6b41; }
-      #smoke-map-container #smoke-map-legend-container .legend-block.color-6 {
+      #smoke-map-container .smoke-map-legend-container .legend-block.color-6 {
         background-color: #df4434; }
-      #smoke-map-container #smoke-map-legend-container .legend-block.color-7 {
+      #smoke-map-container .smoke-map-legend-container .legend-block.color-7 {
         background-color: #922c21; }
-      #smoke-map-container #smoke-map-legend-container .legend-block.color-8 {
-        background-color: black; }
-      #smoke-map-container #smoke-map-legend-container .legend-block .text {
-        margin-top: -20px; }
+      #smoke-map-container .smoke-map-legend-container .legend-block.grey-0 {
+        background-color: #eeeeee; }
+      #smoke-map-container .smoke-map-legend-container .legend-block.grey-1 {
+        background-color: #cccccc; }
+      #smoke-map-container .smoke-map-legend-container .legend-block.grey-2 {
+        background-color: #aaaaaa; }
+      #smoke-map-container .smoke-map-legend-container .legend-block.grey-3 {
+        background-color: #888888; }
+      #smoke-map-container .smoke-map-legend-container .legend-block.grey-4 {
+        background-color: #666666; }
+      #smoke-map-container .smoke-map-legend-container .legend-block.grey-5 {
+        background-color: #444444; }
+      #smoke-map-container .smoke-map-legend-container .legend-block.grey-6 {
+        background-color: #222222; }
+      #smoke-map-container .smoke-map-legend-container .legend-block .text {
+        margin-top: -17px; }
+    #smoke-map-container .smoke-map-legend-container span {
+      font-size: 10px;
+      vertical-align: bottom; }
   #smoke-map-container #smoke-map-states path {
     stroke: black;
     fill: #fafafa;
@@ -133,8 +154,6 @@
       fill: #df4434; }
     #smoke-map-container #smoke-map-counties path.color-7 {
       fill: #922c21; }
-    #smoke-map-container #smoke-map-counties path.color-8 {
-      fill: black; }
     #smoke-map-container #smoke-map-counties path:not(.disabled):hover {
       opacity: 0.9; }
     #smoke-map-container #smoke-map-counties path:not(.disabled).selected {
@@ -149,13 +168,36 @@
     display: none;
     position: absolute;
     left: 340px;
-    bottom: 45px;
-    width: 210px;
+    bottom: 40px;
+    width: 190px;
     padding: 8px;
     background-color: rgba(255, 255, 255, 0.9);
     border: 1pt solid #999;
     border-radius: 2px;
     font-size: 12px;
     z-index: 5; }
+    #smoke-map-container #smoke-map-tooltip.higher {
+      bottom: 70px; }
     #smoke-map-container #smoke-map-tooltip.disabled {
       color: #999; }
+
+#smoke-map-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+  padding: 10% 25%;
+  background-color: white;
+  box-sizing: border-box; }
+  #smoke-map-cover p {
+    font-size: 30px;
+    margin-bottom: 20px; }
+  #smoke-map-cover input {
+    width: 100%;
+    outline: none;
+    padding: 10px;
+    font-size: 20px; }
+  #smoke-map-cover.hidden {
+    display: none; }

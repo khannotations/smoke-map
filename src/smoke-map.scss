@@ -19,7 +19,15 @@ $color-4: #fbbb4b; // orange
 $color-5: #fb6b41; // red
 $color-6: #df4434; // dark-red
 $color-7: #922c21; // black-red
-$color-8: #000;    // black (unused)
+
+$grey-0: #eee;
+$grey-1: #ccc;
+$grey-2: #aaa;
+$grey-3: #888;
+$grey-4: #666;
+$grey-5: #444;
+$grey-6: #222;
+
 $stroke: #999;
 
 /* Everything scoped inside the smoke-map div */
@@ -97,15 +105,23 @@ $stroke: #999;
   }
 
   /* Legend container styles */
-  #smoke-map-legend-container {
+  .smoke-map-legend-container {
     z-index: 2;
     position: absolute;
     bottom: 10px; left: $data-container-width + 20px;
+    background-color: rgba(white, 0.8);
+    border-radius: 2px;
+    &.top {
+      bottom: 38px;
+    }
+    &.hidden {
+      display: none;
+    }
     .legend-block {
       display: inline-block;
       padding: 5px 8px;
-      font-size: 10px;
-      width: 60px;
+      font-size: 8.5px;
+      width: 65px;
       text-align: center;
       &.color-0 { background-color: $color-0; }
       &.color-1 { background-color: $color-1; }
@@ -115,10 +131,20 @@ $stroke: #999;
       &.color-5 { background-color: $color-5; }
       &.color-6 { background-color: $color-6; }
       &.color-7 { background-color: $color-7; }
-      &.color-8 { background-color: $color-8; }
+      &.grey-0 { background-color: $grey-0; }
+      &.grey-1 { background-color: $grey-1; }
+      &.grey-2 { background-color: $grey-2; }
+      &.grey-3 { background-color: $grey-3; }
+      &.grey-4 { background-color: $grey-4; }
+      &.grey-5 { background-color: $grey-5; }
+      &.grey-6 { background-color: $grey-6; }
       .text {
-        margin-top: -20px;
+        margin-top: -17px;
       }
+    }
+    span {
+      font-size: 10px;
+      vertical-align: bottom;
     }
   }
 
@@ -176,7 +202,6 @@ $stroke: #999;
       &.color-5 { fill: $color-5; }
       &.color-6 { fill: $color-6; }
       &.color-7 { fill: $color-7; }
-      &.color-8 { fill: $color-8; }
       &:not(.disabled) {
         &:hover { opacity: 0.9; } // Raise opacity on hover
         &.selected {
@@ -198,8 +223,11 @@ $stroke: #999;
     display: none;
     position: absolute;
     left: $data-container-width + 20px;
-    bottom: 45px;
-    width: 210px;
+    bottom: 40px;
+    &.higher {
+      bottom: 70px;
+    }
+    width: 190px;
     padding: 8px;
     background-color: rgba(white, 0.9);
     border: 1pt solid #999;
@@ -209,5 +237,28 @@ $stroke: #999;
     &.disabled {
       color: #999;
     }
+  }
+}
+
+#smoke-map-cover {
+  position: fixed;
+  top: 0; left: 0;
+  height: 100%; width: 100%;
+  z-index: 100;
+  padding: 10% 25%;
+  background-color: white;
+  box-sizing: border-box;
+  p {
+    font-size: 30px;
+    margin-bottom: 20px;
+  }
+  input {
+    width: 100%;
+    outline: none;
+    padding: 10px;
+    font-size: 20px;
+  }
+  &.hidden {
+    display: none;  
   }
 }

@@ -9,7 +9,7 @@
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/polymaps/2.5.1/polymaps.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.0.4/highcharts.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.0.4/highcharts.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
   <!-- Just here for fallback -->
   <script src="./scripts/jquery-2.1.3.min.js"></script>
@@ -18,14 +18,22 @@
   <script src="./scripts/underscore-min.js"></script>
   
   <script src="./scripts/smoke-map.js"></script>
+  <script src="./scripts/smoke-map-cover.js"></script>
   <script>
   // Insert this into your own $(document).ready
   $(document).ready(function() {
     smokeMap.apply(this);
+    smokeMapCover.apply(this);
   });
   </script>
   <div class="container">
     <div id="smoke-map-container"></div>
+  </div>
+  <div id="smoke-map-cover" class="hidden">
+    <p>
+      Password:
+    </p>
+    <input type="password" id="smoke-map-cover-password">
   </div>
 </body>
 </html>
