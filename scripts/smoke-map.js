@@ -36,8 +36,8 @@ function smokeMap() {
     // }
   },
   KEY_TO_NAME = { // Key name to pretty, canonical name
-    length: "Average SW Length (days)",
-    intensity: "Average SW intensity (μg/m3)",
+    length: "Avg SW Length (days)",
+    intensity: "Avg SW Intensity (μg/m³)",
     seasonLength: "Length of SW Season",
     sw6: "Total # of SWs in 6 yrs",
     sw1: "# SWs in 1 yr",
@@ -74,10 +74,14 @@ function smokeMap() {
     population: {
       values: [0, 50, 4000, 30000, 220000, 1500000]
     },
+    populationIntensity: {
+      values: [0, 1, 10, 100, 1000, 10000]
+    },
   },
   VIEW = { // Variables to control whats shown in the data container.
     time: "present",
     layer: "county",
+    // population: "population",
     colorBy: "index",
     dataType: "length",
     // countyDataType: "smoke",
@@ -144,19 +148,16 @@ function smokeMap() {
         }
       })
     });
-    var populationGeoJson = populationJsonToGeoJson();
-    console.log(populationGeoJson);
     popLayer = po.geoJson()
-      .features(populationGeoJson)
+      .features(populationJsonToGeoJson())
       .id("smoke-map-population")
       .on("load", function(e) {
         $.each(e.features, function(i, f) {
-          var p = f.data.properties;
-          $(f.element).attr("presPopInt", p["presPopInt"]);
-          $(f.element).attr("futPopInt", p["presPopInt"]);
+          $(f.element).attr("fips", f.data.properties["FIPS"]);
         })
       });
     adjustView(); // Add layers to map so data loads
+    adjustPopulation();
     attachInputChangeHandlers(); 
   });
 
@@ -246,17 +247,26 @@ function smokeMap() {
     $("input[name='smoke-map-time']").change(function(e) {
       VIEW.time = $(e.currentTarget).data("time");
       colorMap(); // Recolor map
+      adjustPopulation(); // Adjust population colors
     });
     // Attach event handlers to checkboxes
     $("input[name='smoke-map-layer']").change(function(e) {
       VIEW.layer = $(e.currentTarget).data("layer");
+      // Existing layers must be removed before calling adjustView
       map.remove(countyLayer).remove(stateLayer).remove(popLayer);
       adjustView();
+      // Disable population controls if we move to state view
+      $("input[name='smoke-map-population']").attr("disabled",
+        VIEW.layer === "state");
+      adjustPopulation();
+    });
+    $("input[name='smoke-map-population']").change(function(e) {
+      VIEW.population = $(e.currentTarget).data("population");
+      adjustPopulation();
     });
     // Attach select event handlers
     $("select[name='smoke-map-color-by']").change(function(e) {
       VIEW.colorBy = $(this).val();
-      console.log(VIEW.colorBy);
       showStateData();
       colorMap();
     });
@@ -268,21 +278,16 @@ function smokeMap() {
       VIEW.stateDataType = $(this).val();
       showStateData();
     });
-    // $("select[name='smoke-map-county-data-type']").change(function(e) {
-    //   VIEW.countyDataType = $(this).val();
-    //   showCountyData();
-    // });
   }
 
   /*
    * Colors the entire map depending on VIEW.colorBy, and adjusts the legend.
    */
   function colorMap() {
-    var values = COLOR_STOPS[VIEW.colorBy].values;
+    var values = COLOR_STOPS[VIEW.colorBy].values, scaleText;
     $(".legend-block[class*=color]").hide();
     $.each(values, function(index, val) {
       var elem = $(".color-"+index),
-          greyElem = $(".grey-"+index),
           text;
       if (VIEW.colorBy === "index" || index === 0) {
         text = index + "";
@@ -294,10 +299,12 @@ function smokeMap() {
     });
     if (VIEW.colorBy !== "index") {
       // Add "> X" caption on last legend-block
-      $(".color-"+values.length).find(".text").text("> " +
+      $(".legend-block.color-"+values.length).find(".text").text("> " +
         values[values.length-1]);
-      $(".color-"+values.length).show();
+      $(".legend-block.color-"+values.length).show();
     }
+    scaleText = KEY_TO_NAME[VIEW.colorBy] + ": ";
+    $(".smoke-map-legend-container.data").find(".scale").text(scaleText);
     $.each($("#smoke-map-counties path"), function(i, p) {
       colorCounty(p);
     });
@@ -321,6 +328,50 @@ function smokeMap() {
     }
     addClass(element, "color-" + index);  // Add new color class
   }
+  /*
+   * Given a population element, assigns a grey clas depending on its value.
+   */
+  function adjustPopulation() {
+    var key = KEYS[VIEW.time][VIEW.population];
+    console.log("key", key, VIEW.population)
+    if (key && VIEW.layer === "county") { // Only show on county
+      map.add(popLayer);
+      $(".smoke-map-legend-container.pop").removeClass("hidden");
+      $("#smoke-map-tooltip").addClass("higher");
+      $.each($("#smoke-map-population circle"), function(i, element) {
+        var fips = $(element).attr("fips"),
+            val = COUNTY_DATA[fips][key],
+            values = COLOR_STOPS[VIEW.population].values,
+            index = 0, scaleText;
+        while(values[index] !== undefined && val > values[index]) {
+          index++;
+        }
+        for (var i = 0; i < POP_COLORS; i++) {
+          removeClass(element, "grey-" + i); // Remove any previous grey classes
+        }
+        addClass(element, "grey-" + index);  // Add new grey class
+        $(element).attr("r", 0.7*index + 1); // Adjust size
+        // Adjust the scale
+        for (var i = 0; i < POP_COLORS; i++) {
+          var popText;
+          if (i === POP_COLORS-1) { // 7 population colors
+            popText = "> " + values[i].toString().replace(/000$/, "K");
+          } else {
+            popText = values[i].toString().replace(/000$/, "K") + "-" +
+              values[i+1].toString().replace(/000$/, "K");
+          }
+          $(".legend-block.grey-"+i).children(".text").text(popText);
+        }
+        scaleText = (VIEW.population === "population" ? "Pop. (# ppl): " :
+          "Pop. density (ppl/mi²): ");
+        $(".smoke-map-legend-container.pop").find(".scale").text(scaleText);
+      });
+    } else {
+      map.remove(popLayer);
+      $(".smoke-map-legend-container.pop").addClass("hidden");
+      $("#smoke-map-tooltip").removeClass("higher");
+    }
+  }
 
   function showStateData(fips, name) {
     // Store values in case we need to update view without parameters. 
@@ -330,6 +381,7 @@ function smokeMap() {
     if (!data) {
       return;
     }
+    $("#smoke-map-data").addClass("state").removeClass("county");
     var counties = [], presentData = [], futureData = [], diffData = [];
     var sortedData = _.sortBy(data, function(d) {
       // Sort data correctly. 
@@ -430,6 +482,7 @@ function smokeMap() {
     if (!data) {
       return;
     }
+    $("#smoke-map-data").addClass("county").removeClass("state");
     // if (VIEW.countyDataType === "smoke") {
       var countyKeys = ["sw6", "swDay", "seasonLength", "intensity", "length"],
           presentData = [], futureData = [];
@@ -497,49 +550,77 @@ function smokeMap() {
         dataC = $(newDiv).attr("id", "smoke-map-data-container")
           .addClass("smoke-map-content-container"),
         // Bottom center legend
-        legendCTop = $(newDiv).attr("class", "smoke-map-legend-container top"), 
-        legendCBot = $(newDiv).attr("class", "smoke-map-legend-container");
+        legendCTop = $(newDiv).attr("class", "smoke-map-legend-container pop"), 
+        legendCBot = $(newDiv).attr("class", "smoke-map-legend-container data");
 
     // Control container
-    var colorOptions = [];
+    var colorOptions = [], populationOptions = [];
     $.each(["index", "sw6", "swDay", "length", "intensity"], function(i, key) {
       colorOptions.push(createOption(key, KEY_TO_NAME[key]));
     });
-    var controlTable = $("<table></table>").append(
+    // populationOptions.push(
+    //   createOption("", "None"),
+    //   createOption("present.population", "2005 population", true), // selected
+    //   createOption("future.population", "2050 population (A1)"),
+    //   createOption("", "————————").attr("disabled", true),
+    //   createOption("present.populationIntensity", "2005 population density"),
+    //   createOption("future.populationIntensity", "2050 population density (A1)")
+    // );
+    var controlTable = $("<table></table>").addClass("smoke-map-control-table").append(
       $("<tr></tr>").append(
-        $("<td></td>").text("Color by:"),
-        $("<td></td>").attr("colspan", 2).append(
+        $("<td></td>").text("Choose SW information:"),
+        $("<td></td>").attr("colspan", 3).append(
           // Color by <select> element
           $("<select></select>").attr("name", "smoke-map-color-by")
             .append(colorOptions)
         )
       ),
       $("<tr></tr>").append(
-        $("<td></td>").text("Time:"),
+        $("<td></td>").text("Time frame:"),
         $("<td></td>").append(
           createRadio("time", "present", "checked"),
           document.createTextNode("Present")
         ),
-        $("<td></td>").append(
+        $("<td></td>").attr("colspan", 2).append(
           createRadio("time", "future"),
           document.createTextNode("Future")
         )
       ),
       $("<tr></tr>").append(
-        $("<td></td>").text("Layer:"),
+        $("<td></td>").text("Scale by:"),
         $("<td></td>").append(
           createRadio("layer", "county", "checked"),
-          document.createTextNode("Counties")
+          document.createTextNode("County")
+        ),
+        $("<td></td>").attr("colspan", 2).append(
+          createRadio("layer", "state"),
+          document.createTextNode("State")
+        )
+      ),
+      $("<tr></tr>").addClass("smoke-wave-population-control-row").append(
+        $("<td></td>").text("Population:"),
+        $("<td></td>").append(
+          createRadio("population", "population"),
+          document.createTextNode("# Ppl")
         ),
         $("<td></td>").append(
-          createRadio("layer", "state"),
-          document.createTextNode("States")
+          createRadio("population", "populationIntensity"),
+          document.createTextNode("Ppl/mi²")
+        ),
+        $("<td></td>").append(
+          createRadio("population", "", "checked"),
+          document.createTextNode("Hide")
         )
+        // $("<td></td>").attr("colspan", "2").append(
+        //   $("<select></select>").attr("name", "smoke-map-population").append(
+        //     populationOptions
+        //   )
+        // )
       )
     );
     controlC.append($(newDiv).attr("id", "smoke-map-data-options").append(
         $("<p></p>").addClass("smoke-map-head")
-          .text("Smoke Wave Map: Color Controls"),
+          .text("View Smoke Wave Map"),
         controlTable
       )
     );
@@ -556,11 +637,12 @@ function smokeMap() {
       stateDataTypeOptions.push(createOption(key, KEY_TO_NAME[key]));
     });
     var stateOptions = $(newDiv).attr("id", "smoke-map-state-options").append(
-      document.createTextNode("Data: "),
+      document.createTextNode("Choose SW information: "),
       $("<select></select>").attr("name", "smoke-map-state-data-type").append(
         stateDataTypeOptions
       ),
-      document.createTextNode("· Sort: "),
+      $("<br>"),
+      document.createTextNode("Sort by: "),
       $("<select></select>").attr("name", "smoke-map-state-data-sort").append(
         createOption("diff", "Difference"),
         createOption("present", "Present"),
@@ -569,32 +651,23 @@ function smokeMap() {
       )
     );
     dataC.append(
-      $("<p></p>").addClass("smoke-map-head").text("Smoke Wave Map: View Data"),
+      $("<p></p>").addClass("smoke-map-head").text("Data View"),
       // countyOptions,
       stateOptions,
       $(newDiv).attr("id", "smoke-map-data")
     )
     // Legend container
-    legendCTop.append($("<span>Pop: &nbsp;&nbsp; </span>"));
-    legendCBot.append($("<span>Data: &nbsp; </span>"));
+    legendCTop.append($("<span class='scale'></span>"));
+    legendCBot.append($("<span class='scale'></span>"));
     for (i = 0; i < MAX_COLORS; i++) {
-      if (i <= POP_COLORS) {
-        var popText;
-        if (i === 0) {
-          popText = COLOR_STOPS.population.values[0] + "";
-        } else if (i === POP_COLORS) { // 7 population colors
-          popText = "> " + COLOR_STOPS.population.values[POP_COLORS-1] + " ";
-        } else {
-          popText = COLOR_STOPS.population.values[i-1] + " -" +
-            COLOR_STOPS.population.values[i] + " ";
-        }
-        popText = popText.replace(/000 /g, "K");
+      if (i < POP_COLORS) {
         legendCTop.append($(newDiv).addClass("legend-block grey-"+i)
-          .append($(newDiv).addClass("text").text(popText)));
+          .append($(newDiv).addClass("text")));
       }
       legendCBot.append($(newDiv).addClass("legend-block color-"+i)
         .append($(newDiv).addClass("text")));
     }
+
     root.append($(newDiv).attr("id", "smoke-map-tooltip").addClass("higher"),
       controlC, dataC, legendCTop, legendCBot);
     $("#smoke-map-container").append(root);
@@ -609,8 +682,9 @@ function smokeMap() {
   }
 
   /* Creates an <option> element */
-  function createOption(val, text) {
-    return $("<option></option>").attr("value", val).text(text);
+  function createOption(val, text, selected) {
+    return $("<option></option>").attr("value", val).attr("selected", selected)
+      .text(text);
   }
 
   /*
@@ -623,7 +697,6 @@ function smokeMap() {
     if (VIEW.layer === "county") {
       $(DATA_DIV_ID).html("<em>Choose a county to view its data</em>");
       map.add(stateLayer).add(countyLayer); // County layer on top
-      console.log("feat", popLayer.features(), popLayer);
       map.add(popLayer);                    // Population on top of that
       removeClass($("#smoke-map-states"), "active");
       addClass($("#smoke-map-counties"), "active");
@@ -678,27 +751,18 @@ function smokeMap() {
    * POP_PRESENT_LAYER and POP_FUTURE_LAYER global variables must be declared. 
    */
   function populationJsonToGeoJson() {
-    var popGeoJson = {
-      type: "FeatureCollection",
-      features: []
-    }
-    $.each(COUNTY_DATA, function(i, d) {
-      popGeoJson.features.push({
+    return _.map(COUNTY_DATA, function(d) {
+      return {
         type: "Feature",
         geometry: {
           type: "Point",
           coordinates: [d["x"], d["y"]]
         },
         properties: {
-          // state: d["STATE"],
-          // fips: d["FIPS"],
-          presPopInt: d[KEYS.present.populationIntensity],
-          futPopInt: d[KEYS.future.populationIntensity],
+          FIPS: d["FIPS"] // Caps for consistency
         }
-      });
+      };
     });
-    console.log(popGeoJson);
-    return popGeoJson;
   }
   function findPathCenter(pathElem) {
     var bbox = pathElem.getBBox(),

@@ -74,7 +74,7 @@ $stroke: #999;
     z-index: 1;
   }
 
-  $control-height: 115px;
+  $control-height: 150px;
   #smoke-map-control-container {
     top: 10px;
     height: $control-height;
@@ -82,13 +82,18 @@ $stroke: #999;
 
   $data-container-height: $map-height - (30px + $control-height);
   #smoke-map-data-container {
-    top: $control-height + 20px;
+    top: $control-height + 10px + 10px; // 10 for top, 10 for margin
     height: $data-container-height;
     overflow-y: scroll;
   }
 
   #smoke-map-data {
-    height: $data-container-height - 70px;
+    &.state {
+      height: $data-container-height - 82px; // Make room for controls
+    }
+    &.county {
+      height: $data-container-height - 42px;
+    }
   }
 
   #smoke-map-data-options {
@@ -104,14 +109,20 @@ $stroke: #999;
     }
   }
 
+  .smoke-map-control-table {
+    td:first-child {
+      width: 80px;
+    }
+  }
+
   /* Legend container styles */
   .smoke-map-legend-container {
     z-index: 2;
     position: absolute;
     bottom: 10px; left: $data-container-width + 20px;
-    background-color: rgba(white, 0.8);
+    background-color: rgba(white, 1);
     border-radius: 2px;
-    &.top {
+    &.pop {
       bottom: 38px;
     }
     &.hidden {
@@ -120,8 +131,8 @@ $stroke: #999;
     .legend-block {
       display: inline-block;
       padding: 5px 8px;
-      font-size: 8.5px;
-      width: 65px;
+      font-size: 7.5px;
+      width: 60px;
       text-align: center;
       &.color-0 { background-color: $color-0; }
       &.color-1 { background-color: $color-1; }
@@ -144,6 +155,7 @@ $stroke: #999;
     }
     span {
       font-size: 10px;
+      // padding-left: 3px;
       vertical-align: bottom;
     }
   }
@@ -216,6 +228,19 @@ $stroke: #999;
       &.accent {
         fill: black;
       }
+    }
+  }
+
+  #smoke-map-population {
+    circle {
+      opacity: 0.8;
+      fill: $grey-0;
+      &.grey-1 { fill: $grey-1; }
+      &.grey-2 { fill: $grey-2; }
+      &.grey-3 { fill: $grey-3; }
+      &.grey-4 { fill: $grey-4; }
+      &.grey-5 { fill: $grey-5; }
+      &.grey-6 { fill: $grey-6; }
     }
   }
 
