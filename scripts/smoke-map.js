@@ -97,8 +97,8 @@ function smokeMap() {
   po = org.polymaps; // Load map
   map = po.map()
     .container(document.getElementById("smoke-map").appendChild(po.svg("svg")))
-    .zoom(4.98)
-    .center({lat: 39.8, lon: -121.3});
+    .zoom(4.93)
+    .center({lat: 40.5, lon: -122});
 
   stateLayer = po.geoJson()                   // Load state shapes
     .url("./data/states.json")
@@ -291,6 +291,13 @@ function smokeMap() {
           text;
       if (VIEW.colorBy === "index" || index === 0) {
         text = index + "";
+        if (VIEW.colorBy === "index") {
+          if (index == 0) {
+            text += " (low risk)";
+          } else if (index == 5) {
+            text += " (high risk)";
+          }
+        }
       } else {
         text = values[index-1] + " - " + values[index];
       }

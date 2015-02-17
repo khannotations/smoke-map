@@ -39,7 +39,7 @@ $stroke: #999;
   .pull-left { float: left; }
 
   $map-width: 960px;
-  $map-height: 600px;
+  $map-height: 650px;
   #smoke-map {
     width: $map-width;
     height: $map-height;
@@ -51,6 +51,7 @@ $stroke: #999;
     position: relative;
     border: 1pt solid #ccc;
     border-radius: 2px;
+    background-color: #d4e9ff;
   }
 
   /* Data container styles */
@@ -67,7 +68,7 @@ $stroke: #999;
     width: $data-container-width;
     left: 10px;
     font-size: 12px;
-    background-color: #eee;
+    background-color: #fff;
     border: 1pt solid #ddd;
     border-radius: 2px;
     padding: 10px;
@@ -122,8 +123,10 @@ $stroke: #999;
     bottom: 10px; left: $data-container-width + 20px;
     background-color: rgba(white, 1);
     border-radius: 2px;
+    border: 1pt solid #ddd;
+    padding: 3px;
     &.pop {
-      bottom: 38px;
+      bottom: 50px;
     }
     &.hidden {
       display: none;
@@ -131,8 +134,8 @@ $stroke: #999;
     .legend-block {
       display: inline-block;
       padding: 5px 8px;
-      font-size: 7.5px;
-      width: 60px;
+      font-size: 8px;
+      width: 63px;
       text-align: center;
       &.color-0 { background-color: $color-0; }
       &.color-1 { background-color: $color-1; }
@@ -233,14 +236,17 @@ $stroke: #999;
 
   #smoke-map-population {
     circle {
+      fill: transparent;
       opacity: 0.8;
-      fill: $grey-0;
-      &.grey-1 { fill: $grey-1; }
-      &.grey-2 { fill: $grey-2; }
-      &.grey-3 { fill: $grey-3; }
-      &.grey-4 { fill: $grey-4; }
-      &.grey-5 { fill: $grey-5; }
-      &.grey-6 { fill: $grey-6; }
+      // fill: $grey-0;
+      stroke-width: 2;
+      stroke: $grey-2;
+      // &.grey-1 { stroke: $grey-1; }
+      // &.grey-2 { stroke: $grey-2; }
+      // &.grey-3 { stroke: $grey-3; }
+      // &.grey-4 { stroke: $grey-4; }
+      // &.grey-5 { stroke: $grey-5; }
+      // &.grey-6 { stroke: $grey-6; }
     }
   }
 
@@ -248,14 +254,14 @@ $stroke: #999;
     display: none;
     position: absolute;
     left: $data-container-width + 20px;
-    bottom: 40px;
+    bottom: 50px;
     &.higher {
-      bottom: 70px;
+      bottom: 90px;
     }
     width: 190px;
-    padding: 8px;
-    background-color: rgba(white, 0.9);
-    border: 1pt solid #999;
+    padding: 5px;
+    background-color: white;
+    border: 1pt solid #ddd;
     border-radius: 2px;
     font-size: 12px;
     z-index: 5;
