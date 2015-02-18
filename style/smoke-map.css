@@ -30,6 +30,13 @@
     border: 1pt solid #ccc;
     border-radius: 2px;
     background-color: #d4e9ff; }
+  #smoke-map-container #smoke-map-header {
+    font-size: 20px;
+    font-weight: bold;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1; }
   #smoke-map-container .smoke-map-head {
     font-weight: bold;
     margin-top: 0;
@@ -37,7 +44,7 @@
     font-size: 120%; }
   #smoke-map-container .smoke-map-content-container {
     position: absolute;
-    width: 320px;
+    width: 310px;
     left: 10px;
     font-size: 12px;
     background-color: #fff;
@@ -68,7 +75,7 @@
     z-index: 2;
     position: absolute;
     bottom: 10px;
-    left: 340px;
+    left: 330px;
     background-color: white;
     border-radius: 2px;
     border: 1pt solid #ddd;
@@ -174,12 +181,12 @@
   #smoke-map-container #smoke-map-population circle {
     fill: transparent;
     opacity: 0.8;
-    stroke-width: 2;
-    stroke: #aaaaaa; }
+    stroke-width: 1;
+    stroke: #444444; }
   #smoke-map-container #smoke-map-tooltip {
     display: none;
     position: absolute;
-    left: 340px;
+    left: 330px;
     bottom: 50px;
     width: 190px;
     padding: 5px;
@@ -187,11 +194,18 @@
     border: 1pt solid #ddd;
     border-radius: 2px;
     font-size: 12px;
-    z-index: 5; }
+    z-index: 3; }
     #smoke-map-container #smoke-map-tooltip.higher {
       bottom: 90px; }
     #smoke-map-container #smoke-map-tooltip.disabled {
       color: #999; }
+  #smoke-map-container #smoke-map-citation {
+    position: absolute;
+    font-size: 9px;
+    font-style: italic;
+    bottom: 1px;
+    right: 1px;
+    z-index: 5; }
 
 #smoke-map-cover {
   position: fixed;
