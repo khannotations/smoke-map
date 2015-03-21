@@ -122,6 +122,46 @@
         background-color: #222222; }
       #smoke-map-container .smoke-map-legend-container .legend-block .text {
         margin-top: -17px; }
+    #smoke-map-container .smoke-map-legend-container .legend-circ {
+      display: inline-block;
+      vertical-align: middle;
+      padding: 0px 8px;
+      font-size: 8px;
+      text-align: center; }
+      #smoke-map-container .smoke-map-legend-container .legend-circ .text {
+        vertical-align: middle; }
+      #smoke-map-container .smoke-map-legend-container .legend-circ .circ {
+        display: inline-block;
+        vertical-align: middle;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        border: 1pt solid #444444;
+        margin-right: 5px; }
+        #smoke-map-container .smoke-map-legend-container .legend-circ .circ.size-1 {
+          width: 3px;
+          height: 3px;
+          border-radius: 3px; }
+        #smoke-map-container .smoke-map-legend-container .legend-circ .circ.size-2 {
+          width: 5.4px;
+          height: 5.4px;
+          border-radius: 5.4px; }
+        #smoke-map-container .smoke-map-legend-container .legend-circ .circ.size-3 {
+          width: 7.8px;
+          height: 7.8px;
+          border-radius: 7.8px; }
+        #smoke-map-container .smoke-map-legend-container .legend-circ .circ.size-4 {
+          width: 10.2px;
+          height: 10.2px;
+          border-radius: 10.2px; }
+        #smoke-map-container .smoke-map-legend-container .legend-circ .circ.size-5 {
+          width: 12.6px;
+          height: 12.6px;
+          border-radius: 12.6px; }
+        #smoke-map-container .smoke-map-legend-container .legend-circ .circ.size-6 {
+          width: 15px;
+          height: 15px;
+          border-radius: 15px; }
     #smoke-map-container .smoke-map-legend-container span {
       font-size: 10px;
       vertical-align: bottom; }

@@ -192,7 +192,7 @@ function smokeMap() {
       // Store fips and name on each <path> element.
       $(f.element).attr("fips", fips);       // Add fips code as "fips" attr
       $(f.element).attr("name", p["NAME"]);  // Add county name as "name" attr
-      if (pIndex === 0 && fIndex === 0) {    // Disable those with no real data
+      if (pIndex === 0 || fIndex === 0) {    // Disable those with no real data
         addClass(f.element, "disabled");
       }
     });
@@ -370,7 +370,8 @@ function smokeMap() {
             popText = values[i].toString().replace(/000$/, "K") + "-" +
               values[i+1].toString().replace(/000$/, "K");
           }
-          $(".legend-block.grey-"+i).children(".text").text(popText);
+          $(".legend-circ.grey-"+i).children(".circ").addClass("size-"+(i+1));
+          $(".legend-circ.grey-"+i).children(".text").text(popText);
         }
         scaleText = (VIEW.population === "population" ? "Pop. (# ppl): " :
           "Pop. density (ppl/mi²): ");
@@ -647,8 +648,9 @@ function smokeMap() {
     legendCBot.append($("<span class='scale'></span>"));
     for (i = 0; i < MAX_COLORS; i++) {
       if (i < POP_COLORS) {
-        legendCTop.append($(newDiv).addClass("legend-block grey-"+i)
-          .append($(newDiv).addClass("text")));
+        legendCTop.append($(newDiv).addClass("legend-circ grey-"+i)
+          .append($(newDiv).addClass("circ"))
+          .append($("<span></span>").addClass("text")));
       }
       legendCBot.append($(newDiv).addClass("legend-block color-"+i)
         .append($(newDiv).addClass("text")));

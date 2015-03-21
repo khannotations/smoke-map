@@ -165,6 +165,54 @@ $stroke: #999;
         margin-top: -17px;
       }
     }
+    .legend-circ {
+      display: inline-block;
+      vertical-align: middle;
+      padding: 0px 8px;
+      font-size: 8px;
+      text-align: center;
+      .text {
+        vertical-align: middle;
+      }
+      .circ {
+        display: inline-block;
+        vertical-align: middle;
+        width: 10px; height: 10px;
+        border-radius: 5px;
+        border: 1pt solid $grey-5;
+        margin-right: 5px;
+        $size-1: (1.2px + 0.3px)*2;
+        $size-2: (2.4px + 0.3px)*2;
+        $size-3: (3.6px + 0.3px)*2;
+        $size-4: (4.8px + 0.3px)*2;
+        $size-5: (6.0px + 0.3px)*2;
+        $size-6: (7.2px + 0.3px)*2;
+        &.size-1 {
+          width: $size-1; height: $size-1;
+          border-radius: $size-1;
+        }
+        &.size-2 {
+          width: $size-2; height: $size-2;
+          border-radius: $size-2;
+        }
+        &.size-3 {
+          width: $size-3; height: $size-3;
+          border-radius: $size-3;
+        }
+        &.size-4 {
+          width: $size-4; height: $size-4;
+          border-radius: $size-4;
+        }
+        &.size-5 {
+          width: $size-5; height: $size-5;
+          border-radius: $size-5;
+        }
+        &.size-6 {
+          width: $size-6; height: $size-6;
+          border-radius: $size-6;
+        }
+      }
+    }
     span {
       font-size: 10px;
       // padding-left: 3px;
