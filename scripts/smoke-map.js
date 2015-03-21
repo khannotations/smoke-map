@@ -14,7 +14,7 @@ function smokeMap() {
       seasonLength: "Future_seasonlength",
       population: "Y2050A1",
       populationIntensity: "popint_a1",
-      headerText: "Future", // Text for header when viewing
+      headerText: "Future (2050)", // Text for header when viewing
     },
     present: {
       index: "PD_index2",
@@ -570,7 +570,7 @@ function smokeMap() {
         ),
         $("<td></td>").attr("colspan", 2).append(
           createRadio("time", "future"),
-          document.createTextNode("Future")
+          document.createTextNode("Future (2050)")
         )
       ),
       $("<tr></tr>").append(
