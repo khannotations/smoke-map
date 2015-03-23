@@ -186,15 +186,12 @@ function smokeMap() {
     $.each(e.features, function(i, f) {      // Attach data to each <path>
       var p = f.data.properties,
           fips = p["STATE"] + p["COUNTY"],   // Get fips code
-          data = COUNTY_DATA[fips],
-          pIndex = data[KEYS.present.index],
-          fIndex = data[KEYS.future.index];
+          data = COUNTY_DATA[fips];
+          // pIndex = data[KEYS.present.index],
+          // fIndex = data[KEYS.future.index];
       // Store fips and name on each <path> element.
       $(f.element).attr("fips", fips);       // Add fips code as "fips" attr
       $(f.element).attr("name", p["NAME"]);  // Add county name as "name" attr
-      if (pIndex === 0 || fIndex === 0) {    // Disable those with no real data
-        addClass(f.element, "disabled");
-      }
     });
     colorMap();
     // Click handlers for county paths (shows county data in data panel)
@@ -288,23 +285,39 @@ function smokeMap() {
    * Colors the entire map depending on VIEW.colorBy, and adjusts the legend.
    */
   function colorMap() {
+    // Color the legend
     var values = COLOR_STOPS[VIEW.colorBy].values, scaleText;
     $(".legend-block[class*=color]").hide();
     $.each(values, function(index, val) {
+      index++; // Starting to count from 1, not 0
+      if (index === values.length) {
+        return;
+      }
       var elem = $(".color-"+index),
           text;
-      if (VIEW.colorBy === "index" || index === 0) {
+
+      if (VIEW.colorBy === "index") {
         text = index + "";
-        if (VIEW.colorBy === "index") {
-          if (index == 0) {
-            text += " (low risk)";
-          } else if (index == 5) {
-            text += " (high risk)";
-          }
+        if (index === 1) {
+          text += " (low risk)";
+        } else if (index == 5) {
+          text += " (high risk)";
         }
       } else {
-        text = values[index-1] + " - " + values[index];
+        text = values[index - 1] + " - " + values[index];
       }
+      // if (VIEW.colorBy === "index" || index === 0) {
+      //   text = index + "";
+      //   if (VIEW.colorBy === "index") {
+      //     if (index == 0) {
+      //       text += " (low risk)";
+      //     } else if (index == 5) {
+      //       text += " (high risk)";
+      //     }
+      //   }
+      // } else {
+      //   text = values[index-1] + " - " + values[index];
+      // }
       $(elem).find(".text").text(text);
       $(elem).show();
     });
@@ -316,6 +329,7 @@ function smokeMap() {
     }
     scaleText = KEY_TO_NAME[VIEW.colorBy] + ": ";
     $(".smoke-map-legend-container.data").find(".scale").text(scaleText);
+    // Color the counties
     $.each($("#smoke-map-counties path"), function(i, p) {
       colorCounty(p);
     });
@@ -337,7 +351,12 @@ function smokeMap() {
     for (var i = 0; i < MAX_COLORS; i++) {
       removeClass(element, "color-" + i); // Remove any previous color classes
     }
-    addClass(element, "color-" + index);  // Add new color class
+    if (val === 0) {
+      addClass(element, "disabled");      // No data available
+    } else {
+      removeClass(element, "disabled");   // Undisable
+      addClass(element, "color-" + index);  // Add new color class
+    }
   }
   /*
    * Given a population element, assigns a grey clas depending on its value.
@@ -646,9 +665,9 @@ function smokeMap() {
     // Legend container
     legendCTop.append($("<span class='scale'></span>"));
     legendCBot.append($("<span class='scale'></span>"));
-    for (i = 0; i < MAX_COLORS; i++) {
+    for (i = 1; i < MAX_COLORS; i++) {
       if (i < POP_COLORS) {
-        legendCTop.append($(newDiv).addClass("legend-circ grey-"+i)
+        legendCTop.append($(newDiv).addClass("legend-circ")
           .append($(newDiv).addClass("circ"))
           .append($("<span></span>").addClass("text")));
       }
