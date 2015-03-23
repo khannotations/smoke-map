@@ -222,7 +222,7 @@ function smokeMap() {
         if (name !== oldName) {
           c = elem.attr("class") || "";
           if (c.indexOf("disabled") !== -1) {
-            dataString = "No Data Available";
+            dataString = "no SW";
             $("#smoke-map-tooltip").addClass("disabled");
           } else {
             dataString = COUNTY_DATA[fips][KEYS[VIEW.time][VIEW.colorBy]];
@@ -667,7 +667,7 @@ function smokeMap() {
     legendCBot.append($("<span class='scale'></span>"));
     for (i = 1; i < MAX_COLORS; i++) {
       if (i < POP_COLORS) {
-        legendCTop.append($(newDiv).addClass("legend-circ")
+        legendCTop.append($(newDiv).addClass("legend-circ grey-"+i)
           .append($(newDiv).addClass("circ"))
           .append($("<span></span>").addClass("text")));
       }
