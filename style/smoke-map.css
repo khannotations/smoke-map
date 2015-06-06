@@ -3,6 +3,9 @@
  * Rafi Khan
  * December 22, 2014
  */
+html, body {
+  margin: 0; }
+
 .container {
   width: 960px;
   margin: 0 auto; }
@@ -122,7 +125,7 @@
         width: 10px;
         height: 10px;
         border-radius: 5px;
-        border: 1pt solid #444444;
+        border: 1pt solid #444;
         margin-right: 5px; }
         #smoke-map-container .smoke-map-legend-container .legend-circ .circ.size-1 {
           width: 3px;
@@ -208,7 +211,7 @@
     fill: transparent;
     opacity: 0.8;
     stroke-width: 1;
-    stroke: #444444; }
+    stroke: #444; }
   #smoke-map-container #smoke-map-tooltip {
     display: none;
     position: absolute;
@@ -253,3 +256,5 @@
     font-size: 20px; }
   #smoke-map-cover.hidden {
     display: none; }
+
+/*# sourceMappingURL=smoke-map.css.map */
