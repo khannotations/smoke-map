@@ -557,7 +557,7 @@ function smokeMap() {
         legendCTop = $(newDiv).attr("class", "smoke-map-legend-container pop"), 
         legendCBot = $(newDiv).attr("class", "smoke-map-legend-container data"),
         citation = $(newDiv).attr("id", "smoke-map-citation").text(
-          "Liu et al., (2015)");
+          "Liu et al., (2016)");
 
     // Control container
     var colorOptions = [], populationOptions = [];
