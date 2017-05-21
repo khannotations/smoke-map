@@ -127,7 +127,7 @@ function smokeMap() {
       });
       makeStateLabels();
     });
-    
+
   countyLayer = po.geoJson() // Load county shapes
     .url("./data/counties.json")
     .id("smoke-map-counties")
@@ -160,7 +160,7 @@ function smokeMap() {
       });
     adjustView(); // Add layers to map so data loads
     adjustPopulation();
-    attachInputChangeHandlers(); 
+    attachInputChangeHandlers();
   });
 
   var arePathsPrepared = false,
@@ -206,7 +206,7 @@ function smokeMap() {
             addClass(elem, "selected"); // Highlight clicked county
             // Rearrange the element so its the last one of its parent, and full
             // outline shows up
-            elem.remove(); 
+            elem.remove();
             parent.append(elem);
         }
       });
@@ -334,8 +334,8 @@ function smokeMap() {
       colorCounty(p);
     });
   }
-  /* 
-   * Given a county element, assigns color class depending on 
+  /*
+   * Given a county element, assigns color class depending on
    * given mode. The element must have a 'fips' attribute.
    */
   function colorCounty(element) {
@@ -404,7 +404,7 @@ function smokeMap() {
   }
 
   function showStateData(fips, name) {
-    // Store values in case we need to update view without parameters. 
+    // Store values in case we need to update view without parameters.
     VIEW.currentFips = fips || VIEW.currentFips;
     VIEW.currentName = name || VIEW.currentName;
     var data = STATE_DATA[VIEW.currentFips];
@@ -414,7 +414,7 @@ function smokeMap() {
     $("#smoke-map-data").addClass("state").removeClass("county");
     var counties = [], presentData = [], futureData = [], diffData = [];
     var sortedData = _.sortBy(data, function(d) {
-      // Sort data correctly. 
+      // Sort data correctly.
       var presentVal = d[KEYS.present[VIEW.stateDataType]],
           futureVal = d[KEYS.future[VIEW.stateDataType]],
           fips = d["FIPS"],
@@ -554,10 +554,13 @@ function smokeMap() {
         dataC = $(newDiv).attr("id", "smoke-map-data-container")
           .addClass("smoke-map-content-container"),
         // Bottom center legend
-        legendCTop = $(newDiv).attr("class", "smoke-map-legend-container pop"), 
+        legendCTop = $(newDiv).attr("class", "smoke-map-legend-container pop"),
         legendCBot = $(newDiv).attr("class", "smoke-map-legend-container data"),
-        citation = $(newDiv).attr("id", "smoke-map-citation").text(
-          "Liu et al., (2016)");
+        citation = $(newDiv).attr("id", "smoke-map-citation").append(
+          $("<span></span>").text("Liu et al., (2016). "),
+          $("<a></a>").attr("href", "https://github.com/khanotations/smoke-map")
+            .attr("target", "_blank")
+            .text("How to use this map"));
 
     // Control container
     var colorOptions = [], populationOptions = [];
@@ -675,7 +678,7 @@ function smokeMap() {
         .append($(newDiv).addClass("text")));
     }
 
-    
+
     root.append($(newDiv).attr("id", "smoke-map-tooltip").addClass("higher"),
       header, controlC, dataC, legendCTop, legendCBot, citation);
 
@@ -697,7 +700,7 @@ function smokeMap() {
   }
 
   /*
-   * Switches between viewing data and not viewing data. Called when 
+   * Switches between viewing data and not viewing data. Called when
    * VIEW.dataView is changed.
    */
   function adjustView() {
@@ -757,7 +760,7 @@ function smokeMap() {
   /* SVG utility functions */
   /*
    * Makes population layer geoJson for present and future from COUNTY_DATA.
-   * POP_PRESENT_LAYER and POP_FUTURE_LAYER global variables must be declared. 
+   * POP_PRESENT_LAYER and POP_FUTURE_LAYER global variables must be declared.
    */
   function populationJsonToGeoJson() {
     return _.map(COUNTY_DATA, function(d) {

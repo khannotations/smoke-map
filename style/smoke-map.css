@@ -232,8 +232,8 @@ html, body {
     position: absolute;
     font-size: 9px;
     font-style: italic;
-    bottom: 1px;
-    right: 1px;
+    top: 11px;
+    left: 327px;
     z-index: 5; }
 
 #smoke-map-cover {

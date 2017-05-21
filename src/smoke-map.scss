@@ -73,7 +73,7 @@ $stroke: #999;
     margin-bottom: 5px;
     font-size: 120%;
   }
-  
+
   $data-container-width: 310px;
   .smoke-map-content-container {
     position: absolute;
@@ -304,12 +304,12 @@ $stroke: #999;
     position: absolute;
     font-size: 9px;
     font-style: italic;
-    bottom: 1px; right: 1px;
+    top: 11px; left: $data-container-width + 17px;
     z-index: 5;
   }
 }
 
-// "Password" cover that hides map from noobs. 
+// "Password" cover that hides map from noobs.
 #smoke-map-cover {
   position: fixed;
   top: 0; left: 0;
@@ -329,6 +329,6 @@ $stroke: #999;
     font-size: 20px;
   }
   &.hidden {
-    display: none;  
+    display: none;
   }
 }
